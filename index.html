@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ESTILOS (iguales a los que ya tenías, sin cambios) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -21,7 +22,6 @@
             margin: 0 auto;
             padding: 1.5rem 1rem;
         }
-        /* Header mejorado */
         .header {
             background: linear-gradient(135deg, #0b2b5c, #1e3a8a, #3b5b9b);
             border-radius: 2rem 2rem 1rem 1rem;
@@ -275,7 +275,6 @@
             font-size: 0.9rem;
             margin-top: 2rem;
         }
-        /* Animaciones */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -383,12 +382,12 @@
 
     <script>
         // === CONFIGURACIÓN ===
-        // 👇 REEMPLAZA ESTA URL CON LA DE TU WEB APP DE GOOGLE APPS SCRIPT
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyobJkylnbwUcfuCBCSBPsPTh2kdX-Vk9DklqBykaxaZY9u0BK7l5WDMUq1dVEREi8k6A/exec';
+        // 🔴 IMPORTANTE: REEMPLAZA ESTA URL CON LA DE TU WEB APP DE GOOGLE APPS SCRIPT DESPLEGADA
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx07sNQ8kozIFsPCyg38vfg2ijNPqww6HZBJ2KIVl4A4R3fzMtojlSHSELQ2DJTTpyg4w/exec';
 
         let estructuraGlobal = null;
         let usuarioActual = { cedula: '', nombres: '', apellidos: '' };
-        let progresoUsuario = {};     // { temaId: true }
+        let progresoUsuario = {};
         let temaSeleccionado = null;
 
         // === FUNCIONES DE MENSAJES ===
@@ -396,7 +395,11 @@
             const divExito = document.getElementById('mensajeExito');
             const divError = document.getElementById('mensajeError');
             const divInfo = document.getElementById('mensajeInfo');
-            if (!divExito || !divError || !divInfo) return;
+            if (!divExito || !divError || !divInfo) {
+                console.warn('Elementos de mensajes no encontrados');
+                alert(texto);
+                return;
+            }
             divExito.style.display = 'none';
             divError.style.display = 'none';
             divInfo.style.display = 'none';
@@ -419,15 +422,16 @@
         async function cargarEstructura() {
             try {
                 const response = await fetch('estructura.json');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 estructuraGlobal = await response.json();
                 console.log('✅ Estructura cargada');
-                // Solo construimos árbol si ya tenemos usuario (para mostrar su progreso)
                 if (usuarioActual.cedula) {
                     construirArbol();
                 }
             } catch (error) {
                 console.error('❌ Error cargando estructura.json:', error);
                 document.getElementById('arbolNavegacion').innerHTML = '<p class="mensaje-error">Error al cargar el contenido. Asegúrate de que el archivo estructura.json existe.</p>';
+                mostrarMensaje('No se pudo cargar la estructura del curso', 'error');
             }
         }
 
@@ -436,7 +440,10 @@
             const contenedor = document.getElementById('arbolNavegacion');
             if (!contenedor) return;
             contenedor.innerHTML = '';
-            if (!estructuraGlobal || !estructuraGlobal.trayectos.length) return;
+            if (!estructuraGlobal || !estructuraGlobal.trayectos || !estructuraGlobal.trayectos.length) {
+                contenedor.innerHTML = '<p class="mensaje-error">Estructura de curso inválida.</p>';
+                return;
+            }
             const trayecto = estructuraGlobal.trayectos[0];
             const ul = document.createElement('ul');
             ul.className = 'tree';
@@ -553,22 +560,29 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-                const result = await response.json();
+                const text = await response.text();
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch(e) {
+                    console.error('Respuesta no JSON:', text);
+                    mostrarMensaje('Error: el servidor no respondió con JSON', 'error');
+                    return;
+                }
                 if (result.success) {
                     progresoUsuario[tema.id] = true;
                     mostrarMensaje('¡Tema completado!', 'exito');
-                    // Actualizar icono en el árbol
                     const liTema = document.querySelector(`.tema-item[data-tema-id="${tema.id}"]`);
                     if (liTema) {
                         liTema.querySelector('i').className = 'fas fa-check-circle completado-badge';
                     }
                     document.getElementById('btnCompletarTema').style.display = 'none';
                 } else {
-                    mostrarMensaje('Error al guardar progreso', 'error');
+                    mostrarMensaje('Error al guardar progreso: ' + (result.error || 'desconocido'), 'error');
                 }
             } catch (error) {
                 console.error(error);
-                mostrarMensaje('Error de conexión', 'error');
+                mostrarMensaje('Error de conexión: ' + error.message, 'error');
             }
         }
 
@@ -579,36 +593,41 @@
             try {
                 const url = `${GOOGLE_APPS_SCRIPT_URL}?action=getUser&cedula=${encodeURIComponent(cedula)}`;
                 const response = await fetch(url);
-                const data = await response.json();
+                const text = await response.text();
+                console.log('Respuesta getUser:', text);
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch(e) {
+                    console.error('Respuesta no JSON:', text);
+                    mostrarMensaje('Error: el servidor no devolvió un JSON válido. Revisa la Web App.', 'error');
+                    loader.style.display = 'none';
+                    return;
+                }
                 loader.style.display = 'none';
                 if (data.success && data.user) {
-                    // Usuario existe
                     usuarioActual = {
                         cedula: data.user.cedula,
                         nombres: data.user.nombres,
                         apellidos: data.user.apellidos
                     };
                     progresoUsuario = data.progreso || {};
-                    // Ocultar login y mostrar contenido principal
                     document.getElementById('inicio').style.display = 'none';
                     document.getElementById('contenidoPrincipal').classList.remove('oculto');
                     document.getElementById('navClase').classList.remove('oculto');
-                    // Cargar estructura si aún no está
                     if (!estructuraGlobal) await cargarEstructura();
                     construirArbol();
                     mostrarMensaje(`Bienvenido de nuevo, ${usuarioActual.nombres} ${usuarioActual.apellidos}`, 'exito');
                 } else {
-                    // Usuario no registrado -> mostrar formulario de registro
                     document.getElementById('inicio').style.display = 'none';
                     document.getElementById('datosAcademico').classList.remove('oculto');
-                    // Pre-cargar cédula en algún lugar
                     document.getElementById('nombres').focus();
                     mostrarMensaje('Cédula no registrada. Completa tus datos.', 'info');
                 }
             } catch (error) {
                 loader.style.display = 'none';
                 console.error(error);
-                mostrarMensaje('Error al conectar con el servidor', 'error');
+                mostrarMensaje('Error al conectar con el servidor: ' + error.message, 'error');
             }
         }
 
@@ -622,7 +641,16 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ action: 'register', ...datos })
                 });
-                const result = await response.json();
+                const text = await response.text();
+                let result;
+                try {
+                    result = JSON.parse(text);
+                } catch(e) {
+                    console.error('Respuesta no JSON:', text);
+                    mostrarMensaje('Error: el servidor no respondió correctamente', 'error');
+                    loader.style.display = 'none';
+                    return;
+                }
                 loader.style.display = 'none';
                 if (result.success) {
                     usuarioActual = {
@@ -638,18 +666,18 @@
                     construirArbol();
                     mostrarMensaje(`Registro exitoso. Bienvenido, ${datos.nombres}`, 'exito');
                 } else {
-                    mostrarMensaje('Error al registrar: ' + result.error, 'error');
+                    mostrarMensaje('Error al registrar: ' + (result.error || 'desconocido'), 'error');
                 }
             } catch (error) {
                 loader.style.display = 'none';
                 console.error(error);
-                mostrarMensaje('Error de conexión', 'error');
+                mostrarMensaje('Error de conexión: ' + error.message, 'error');
             }
         }
 
         // === EVENTOS ===
         document.addEventListener('DOMContentLoaded', function() {
-            cargarEstructura(); // Precargar estructura para agilizar
+            cargarEstructura();
 
             const btnAcceder = document.getElementById('btnAcceder');
             const btnGuardar = document.getElementById('btnGuardarPerfil');
@@ -670,6 +698,10 @@
                 const cedula = cedulaInput.value.trim();
                 if (!nombres || !apellidos) {
                     mostrarMensaje('Complete nombres y apellidos', 'error');
+                    return;
+                }
+                if (!cedula) {
+                    mostrarMensaje('La cédula no puede estar vacía', 'error');
                     return;
                 }
                 const datos = {
