@@ -21,6 +21,7 @@
             margin: 0 auto;
             padding: 1.5rem 1rem;
         }
+        /* Header mejorado */
         .header {
             background: linear-gradient(135deg, #0b2b5c, #1e3a8a, #3b5b9b);
             border-radius: 2rem 2rem 1rem 1rem;
@@ -32,6 +33,7 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
         }
         .logo h1 {
             font-size: 2.4rem;
@@ -69,6 +71,7 @@
             background: #ffffff;
             color: #0b2b5c;
             border-color: white;
+            transform: translateY(-2px);
         }
         .scroll-top {
             position: fixed;
@@ -101,15 +104,10 @@
             margin-bottom: 3rem;
             border: 1px solid #c7d2fe;
             box-shadow: 0 20px 35px -8px rgba(30,58,138,0.2);
+            transition: transform 0.3s ease;
         }
-        .intro-block h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0b2b5c;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
+        .intro-block:hover {
+            transform: translateY(-5px);
         }
         .badge-row {
             display: flex;
@@ -130,6 +128,7 @@
             display: flex;
             gap: 2rem;
             margin-top: 2rem;
+            animation: fadeInUp 0.5s ease-out;
         }
         .sidebar {
             width: 300px;
@@ -145,6 +144,7 @@
             border-radius: 2rem;
             padding: 2rem;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s;
         }
         .tree {
             list-style: none;
@@ -176,28 +176,36 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.95rem;
-            cursor: pointer;
+            transition: background 0.2s;
         }
-        .tree .tema-item.completado i {
-            color: #10b981;
+        .tree .tema-item.completado {
+            text-decoration: line-through;
+            opacity: 0.7;
         }
         .tree .tema-item:hover {
             background: #eef2ff;
             border-radius: 1rem;
         }
+        .completado-badge {
+            font-size: 0.8rem;
+            color: #10b981;
+        }
         .btn-completar {
             background: #10b981;
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.7rem 1.5rem;
             border-radius: 2rem;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             margin-top: 1rem;
-            transition: 0.2s;
+            transition: all 0.2s;
+            display: inline-block;
         }
         .btn-completar:hover {
             background: #059669;
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .btn-completar:disabled {
             background: #9ca3af;
@@ -209,6 +217,7 @@
             text-align: center;
             margin: 1rem 0;
             display: none;
+            animation: fadeIn 0.3s;
         }
         .mensaje-exito { background: #d4edda; color: #155724; }
         .mensaje-error { background: #f8d7da; color: #721c24; }
@@ -235,26 +244,29 @@
             font-size: 0.95rem;
             background: white;
             outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
         }
         input:focus, select:focus {
             border-color: #2d7ee7;
             box-shadow: 0 0 0 3px rgba(45,126,231,0.15);
         }
         .btn-submit {
-            background: #0b2b4f;
+            background: linear-gradient(135deg, #0b2b4f, #1a4880);
             color: white;
             font-weight: 700;
             font-size: 1.1rem;
-            padding: 1.2rem 2.5rem;
+            padding: 1rem 2rem;
             border: none;
             border-radius: 40px;
             width: 100%;
             cursor: pointer;
-            transition: 0.2s;
-            margin-top: 2.5rem;
+            transition: all 0.2s;
+            margin-top: 2rem;
         }
         .btn-submit:hover {
-            background: #1a4880;
+            background: linear-gradient(135deg, #1a4880, #2563eb);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
         .footer-note {
             text-align: center;
@@ -263,6 +275,28 @@
             font-size: 0.9rem;
             margin-top: 2rem;
         }
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3a8a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         @media (max-width: 800px) {
             .main-layout {
                 flex-direction: column;
@@ -270,23 +304,6 @@
             .sidebar {
                 width: 100%;
             }
-        }
-        .logout-btn {
-            background: #dc2626;
-            margin-left: 0.5rem;
-        }
-        .logout-btn:hover {
-            background: #b91c1c;
-        }
-        .user-info {
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            padding: 0.8rem;
-            background: #eef2ff;
-            border-radius: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
     </style>
 </head>
@@ -300,24 +317,33 @@
                 <span>Aprendizaje Progresivo Tangible · Modelo APT</span>
             </div>
             <nav class="nav">
-                <a href="#" id="logoutLink" class="logout-btn oculto"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+                <a href="#inicio"><i class="fas fa-rocket"></i> Inicio</a>
+                <a href="#clase" id="navClase" class="oculto"><i class="fas fa-book-open"></i> Clase</a>
+                <a href="#acerca"><i class="fas fa-info-circle"></i> Acerca</a>
             </nav>
         </header>
 
-        <!-- SECCIÓN DE REGISTRO/ACCESO -->
-        <section id="loginSection" class="intro-block">
+        <!-- SECCIÓN DE ACCESO (Login) -->
+        <section id="inicio" class="intro-block">
             <h2><i class="fas fa-shield-alt" style="color:#1e3a8a;"></i> Acceso al Aula Virtual</h2>
             <p style="font-size:1.2rem; margin-bottom:1.5rem;">Ingresa tu cédula para comenzar. Si es tu primera vez, completa tus datos.</p>
+            <div class="badge-row">
+                <span class="badge-item"><i class="fas fa-id-card"></i> Cédula</span>
+                <span class="badge-item"><i class="fas fa-key"></i> Clave (opcional)</span>
+                <span class="badge-item"><i class="fas fa-arrow-right"></i> Acceder</span>
+            </div>
             <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
                 <input type="text" id="cedulaInput" placeholder="V-12345678" style="max-width: 300px; text-align: center;">
+                <input type="password" id="claveInput" placeholder="Clave (opcional)" style="max-width: 300px; text-align: center;">
                 <button class="btn-submit" id="btnAcceder" style="width: auto; padding: 0.8rem 2rem;">Acceder / Registrar</button>
+                <div id="loadingAcceso" class="loader" style="display:none;"></div>
             </div>
             <div id="mensajeExito" class="mensaje-exito"></div>
             <div id="mensajeError" class="mensaje-error"></div>
             <div id="mensajeInfo" class="mensaje-info"></div>
         </section>
 
-        <!-- FORMULARIO DE DATOS ACADÉMICOS (oculto inicialmente) -->
+        <!-- FORMULARIO DE DATOS ACADÉMICOS (registro) -->
         <div id="datosAcademico" class="oculto">
             <section class="detail-section" style="background: white; border-radius: 2.5rem; padding: 2.2rem;">
                 <h2>📚 Completa tu perfil académico</h2>
@@ -334,16 +360,16 @@
                     <div class="field"><label>Semestre</label><select id="semestreSelect"><option value="I">I</option><option value="II">II</option></select></div>
                 </div>
                 <button class="btn-submit" id="btnGuardarPerfil">Guardar y acceder a la clase</button>
+                <div id="loadingRegistro" class="loader" style="display:none;"></div>
             </section>
         </div>
 
         <!-- CONTENIDO PRINCIPAL (oculto inicialmente) -->
         <div id="contenidoPrincipal" class="oculto">
-            <div id="userInfoBar" class="user-info"></div>
             <div class="main-layout">
                 <div class="sidebar">
                     <h3><i class="fas fa-sitemap"></i> Índice</h3>
-                    <div id="arbolNavegacion"></div>
+                    <div id="arbolNavegacion"><div class="loader"></div></div>
                 </div>
                 <div class="content-area">
                     <div id="contenidoTema"></div>
@@ -356,30 +382,61 @@
     </div>
 
     <script>
-        // ========== CONFIGURACIÓN ==========
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydAQHhM7qO2HhjsdE8Ajm-u8KYcKVLHFIBch-OEapF_1Rid21KwM0lrO4IIjZcKS-4mA/exec'; // Reemplazar con tu URL
-        let estructuraGlobal = null;
-        let usuarioActual = { cedula: '', nombres: '', apellidos: '', nucleo: '', pnf: '', trayecto: '', semestre: '' };
-        let progresoUsuario = {}; // clave: temaId -> true/false
-        let temaSeleccionado = null; // objeto del tema actual
+        // === CONFIGURACIÓN ===
+        // 👇 REEMPLAZA ESTA URL CON LA DE TU WEB APP DE GOOGLE APPS SCRIPT
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyobJkylnbwUcfuCBCSBPsPTh2kdX-Vk9DklqBykaxaZY9u0BK7l5WDMUq1dVEREi8k6A/exec';
 
-        // ========== CARGAR ESTRUCTURA JSON ==========
+        let estructuraGlobal = null;
+        let usuarioActual = { cedula: '', nombres: '', apellidos: '' };
+        let progresoUsuario = {};     // { temaId: true }
+        let temaSeleccionado = null;
+
+        // === FUNCIONES DE MENSAJES ===
+        function mostrarMensaje(texto, tipo) {
+            const divExito = document.getElementById('mensajeExito');
+            const divError = document.getElementById('mensajeError');
+            const divInfo = document.getElementById('mensajeInfo');
+            if (!divExito || !divError || !divInfo) return;
+            divExito.style.display = 'none';
+            divError.style.display = 'none';
+            divInfo.style.display = 'none';
+            if (tipo === 'error') {
+                divError.textContent = texto;
+                divError.style.display = 'block';
+                setTimeout(() => divError.style.display = 'none', 5000);
+            } else if (tipo === 'exito') {
+                divExito.textContent = texto;
+                divExito.style.display = 'block';
+                setTimeout(() => divExito.style.display = 'none', 5000);
+            } else {
+                divInfo.textContent = texto;
+                divInfo.style.display = 'block';
+                setTimeout(() => divInfo.style.display = 'none', 5000);
+            }
+        }
+
+        // === CARGAR ESTRUCTURA (estructura.json) ===
         async function cargarEstructura() {
             try {
                 const response = await fetch('estructura.json');
                 estructuraGlobal = await response.json();
                 console.log('✅ Estructura cargada');
-                construirArbol();
+                // Solo construimos árbol si ya tenemos usuario (para mostrar su progreso)
+                if (usuarioActual.cedula) {
+                    construirArbol();
+                }
             } catch (error) {
                 console.error('❌ Error cargando estructura.json:', error);
                 document.getElementById('arbolNavegacion').innerHTML = '<p class="mensaje-error">Error al cargar el contenido. Asegúrate de que el archivo estructura.json existe.</p>';
             }
         }
 
-        // ========== CONSTRUIR ÁRBOL DE NAVEGACIÓN ==========
+        // === CONSTRUIR ÁRBOL DE NAVEGACIÓN con progreso ===
         function construirArbol() {
             const contenedor = document.getElementById('arbolNavegacion');
+            if (!contenedor) return;
             contenedor.innerHTML = '';
+            if (!estructuraGlobal || !estructuraGlobal.trayectos.length) return;
             const trayecto = estructuraGlobal.trayectos[0];
             const ul = document.createElement('ul');
             ul.className = 'tree';
@@ -405,7 +462,8 @@
                         liTema.className = 'tema-item';
                         liTema.setAttribute('data-tema-id', tema.id);
                         const icon = document.createElement('i');
-                        icon.className = progresoUsuario[tema.id] ? 'fas fa-check-circle completado-badge' : 'far fa-circle';
+                        const completado = progresoUsuario[tema.id] === true;
+                        icon.className = completado ? 'fas fa-check-circle completado-badge' : 'far fa-circle';
                         const span = document.createElement('span');
                         span.textContent = tema.titulo;
                         liTema.appendChild(icon);
@@ -427,7 +485,7 @@
             contenedor.appendChild(ul);
         }
 
-        // ========== MOSTRAR UN TEMA ==========
+        // === MOSTRAR TEMA ===
         function mostrarTema(tema, clase, semestre, trayecto) {
             temaSeleccionado = { tema, clase, semestre, trayecto };
             const container = document.getElementById('contenidoTema');
@@ -458,234 +516,173 @@
             }
 
             if (contenido.quiz) {
-                document.getElementById('responderQuiz')?.addEventListener('click', () => {
-                    const seleccion = document.querySelector('input[name="quiz"]:checked');
-                    if (!seleccion) { mostrarMensaje('Selecciona una respuesta', 'error'); return; }
-                    const respuesta = parseInt(seleccion.value);
-                    const quizData = contenido.quiz;
-                    if (respuesta === quizData.correcta) {
-                        document.getElementById('feedbackQuiz').innerHTML = `<span style="color:green;">✅ ${quizData.feedback || '¡Correcto!'}</span>`;
-                        if (!progresoUsuario[tema.id]) marcarTemaCompletado(tema);
-                    } else {
-                        document.getElementById('feedbackQuiz').innerHTML = `<span style="color:red;">❌ Incorrecto. ${quizData.feedback || 'Inténtalo de nuevo.'}</span>`;
-                    }
-                });
+                const responderBtn = document.getElementById('responderQuiz');
+                if (responderBtn) {
+                    responderBtn.addEventListener('click', () => {
+                        const seleccion = document.querySelector('input[name="quiz"]:checked');
+                        if (!seleccion) { mostrarMensaje('Selecciona una respuesta', 'error'); return; }
+                        const respuesta = parseInt(seleccion.value);
+                        const quizData = contenido.quiz;
+                        if (respuesta === quizData.correcta) {
+                            document.getElementById('feedbackQuiz').innerHTML = `<span style="color:green;">✅ ${quizData.feedback || '¡Correcto!'}</span>`;
+                            if (!progresoUsuario[tema.id]) marcarTemaCompletado(tema);
+                        } else {
+                            document.getElementById('feedbackQuiz').innerHTML = `<span style="color:red;">❌ Incorrecto. ${quizData.feedback || 'Inténtalo de nuevo.'}</span>`;
+                        }
+                    });
+                }
             }
         }
 
-        // ========== MARCAR TEMA COMO COMPLETADO Y GUARDAR EN GOOGLE SHEETS ==========
+        // === MARCAR TEMA COMPLETADO ===
         async function marcarTemaCompletado(tema) {
             if (progresoUsuario[tema.id]) return;
-
             const data = {
-                action: 'progress',
+                action: 'completeTema',
                 cedula: usuarioActual.cedula,
+                temaId: tema.id,
+                temaTitulo: tema.titulo,
                 trayecto: temaSeleccionado.trayecto.titulo,
                 semestre: temaSeleccionado.semestre.titulo,
                 clase: temaSeleccionado.clase.titulo,
-                tema: tema.titulo,
-                temaId: tema.id,
                 timestamp: new Date().toISOString()
             };
-
             try {
                 const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
                 const result = await response.json();
-                if (result.status === 'success') {
+                if (result.success) {
                     progresoUsuario[tema.id] = true;
                     mostrarMensaje('¡Tema completado!', 'exito');
-                    // Actualizar árbol visual
+                    // Actualizar icono en el árbol
                     const liTema = document.querySelector(`.tema-item[data-tema-id="${tema.id}"]`);
                     if (liTema) {
                         liTema.querySelector('i').className = 'fas fa-check-circle completado-badge';
                     }
                     document.getElementById('btnCompletarTema').style.display = 'none';
                 } else {
-                    throw new Error(result.message || 'Error al guardar');
+                    mostrarMensaje('Error al guardar progreso', 'error');
                 }
             } catch (error) {
-                console.error('Error guardando progreso:', error);
-                mostrarMensaje('Error al guardar el progreso. Intenta de nuevo.', 'error');
+                console.error(error);
+                mostrarMensaje('Error de conexión', 'error');
             }
         }
 
-        // ========== FUNCIONES DE MENSAJE ==========
-        function mostrarMensaje(texto, tipo) {
-            const divExito = document.getElementById('mensajeExito');
-            const divError = document.getElementById('mensajeError');
-            const divInfo = document.getElementById('mensajeInfo');
-            if (!divExito || !divError || !divInfo) { alert(`${tipo.toUpperCase()}: ${texto}`); return; }
-            divExito.style.display = 'none';
-            divError.style.display = 'none';
-            divInfo.style.display = 'none';
-            if (tipo === 'error') {
-                divError.textContent = texto;
-                divError.style.display = 'block';
-                setTimeout(() => divError.style.display = 'none', 5000);
-            } else if (tipo === 'exito') {
-                divExito.textContent = texto;
-                divExito.style.display = 'block';
-                setTimeout(() => divExito.style.display = 'none', 5000);
-            } else {
-                divInfo.textContent = texto;
-                divInfo.style.display = 'block';
-                setTimeout(() => divInfo.style.display = 'none', 5000);
-            }
-        }
-
-        // ========== CARGAR PROGRESO DESDE SHEETS ==========
-        async function cargarProgreso(cedula) {
+        // === VERIFICAR CÉDULA CON BACKEND ===
+        async function verificarCedula(cedula) {
+            const loader = document.getElementById('loadingAcceso');
+            loader.style.display = 'block';
             try {
-                const url = `${GOOGLE_APPS_SCRIPT_URL}?action=getProgress&cedula=${encodeURIComponent(cedula)}`;
-                const response = await fetch(url, { method: 'GET', mode: 'cors' });
+                const url = `${GOOGLE_APPS_SCRIPT_URL}?action=getUser&cedula=${encodeURIComponent(cedula)}`;
+                const response = await fetch(url);
                 const data = await response.json();
-                if (data.status === 'success') {
-                    progresoUsuario = {};
-                    data.progreso.forEach(item => {
-                        progresoUsuario[item.temaId] = true;
-                    });
-                    construirArbol(); // reconstruir con nuevos checkmarks
-                    mostrarMensaje('Progreso cargado correctamente', 'exito');
+                loader.style.display = 'none';
+                if (data.success && data.user) {
+                    // Usuario existe
+                    usuarioActual = {
+                        cedula: data.user.cedula,
+                        nombres: data.user.nombres,
+                        apellidos: data.user.apellidos
+                    };
+                    progresoUsuario = data.progreso || {};
+                    // Ocultar login y mostrar contenido principal
+                    document.getElementById('inicio').style.display = 'none';
+                    document.getElementById('contenidoPrincipal').classList.remove('oculto');
+                    document.getElementById('navClase').classList.remove('oculto');
+                    // Cargar estructura si aún no está
+                    if (!estructuraGlobal) await cargarEstructura();
+                    construirArbol();
+                    mostrarMensaje(`Bienvenido de nuevo, ${usuarioActual.nombres} ${usuarioActual.apellidos}`, 'exito');
                 } else {
-                    throw new Error(data.message || 'Error al cargar progreso');
+                    // Usuario no registrado -> mostrar formulario de registro
+                    document.getElementById('inicio').style.display = 'none';
+                    document.getElementById('datosAcademico').classList.remove('oculto');
+                    // Pre-cargar cédula en algún lugar
+                    document.getElementById('nombres').focus();
+                    mostrarMensaje('Cédula no registrada. Completa tus datos.', 'info');
                 }
             } catch (error) {
-                console.error('Error cargando progreso:', error);
-                mostrarMensaje('No se pudo cargar tu progreso. Continuarás desde cero.', 'error');
-                progresoUsuario = {};
-                construirArbol();
+                loader.style.display = 'none';
+                console.error(error);
+                mostrarMensaje('Error al conectar con el servidor', 'error');
             }
         }
 
-        // ========== REGISTRO DE USUARIO ==========
-        async function registrarUsuario(userData) {
-            const data = {
-                action: 'register',
-                ...userData,
-                timestamp: new Date().toISOString()
-            };
+        // === REGISTRAR NUEVO USUARIO ===
+        async function registrarUsuario(datos) {
+            const loader = document.getElementById('loadingRegistro');
+            loader.style.display = 'block';
             try {
                 const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({ action: 'register', ...datos })
                 });
                 const result = await response.json();
-                if (result.status === 'success') {
-                    return true;
+                loader.style.display = 'none';
+                if (result.success) {
+                    usuarioActual = {
+                        cedula: datos.cedula,
+                        nombres: datos.nombres,
+                        apellidos: datos.apellidos
+                    };
+                    progresoUsuario = {};
+                    document.getElementById('datosAcademico').classList.add('oculto');
+                    document.getElementById('contenidoPrincipal').classList.remove('oculto');
+                    document.getElementById('navClase').classList.remove('oculto');
+                    if (!estructuraGlobal) await cargarEstructura();
+                    construirArbol();
+                    mostrarMensaje(`Registro exitoso. Bienvenido, ${datos.nombres}`, 'exito');
                 } else {
-                    throw new Error(result.message || 'Error en registro');
+                    mostrarMensaje('Error al registrar: ' + result.error, 'error');
                 }
             } catch (error) {
-                console.error('Error registrando usuario:', error);
-                mostrarMensaje('Error al registrar. Intenta de nuevo.', 'error');
-                return false;
+                loader.style.display = 'none';
+                console.error(error);
+                mostrarMensaje('Error de conexión', 'error');
             }
         }
 
-        // ========== INICIAR SESIÓN / VERIFICAR USUARIO ==========
-        async function iniciarSesion(cedula) {
-            try {
-                const url = `${GOOGLE_APPS_SCRIPT_URL}?action=getUser&cedula=${encodeURIComponent(cedula)}`;
-                const response = await fetch(url, { method: 'GET', mode: 'cors' });
-                const data = await response.json();
-                if (data.status === 'success' && data.user) {
-                    // Usuario existe: cargar sus datos y progreso
-                    usuarioActual = data.user;
-                    await cargarProgreso(cedula);
-                    mostrarVistaPrincipal();
-                } else {
-                    // Usuario no existe: mostrar formulario de registro
-                    document.getElementById('loginSection').style.display = 'none';
-                    document.getElementById('datosAcademico').classList.remove('oculto');
-                }
-            } catch (error) {
-                console.error('Error verificando usuario:', error);
-                mostrarMensaje('Error de conexión con el servidor. Intenta más tarde.', 'error');
-            }
-        }
-
-        function mostrarVistaPrincipal() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('datosAcademico').classList.add('oculto');
-            document.getElementById('contenidoPrincipal').classList.remove('oculto');
-            document.getElementById('logoutLink').classList.remove('oculto');
-            document.getElementById('userInfoBar').innerHTML = `
-                <span><i class="fas fa-user-graduate"></i> ${usuarioActual.nombres} ${usuarioActual.apellidos} (${usuarioActual.cedula})</span>
-                <span><i class="fas fa-university"></i> ${usuarioActual.nucleo} · ${usuarioActual.semestre}</span>
-            `;
-        }
-
-        function cerrarSesion() {
-            usuarioActual = {};
-            progresoUsuario = {};
-            temaSeleccionado = null;
-            document.getElementById('contenidoPrincipal').classList.add('oculto');
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('datosAcademico').classList.add('oculto');
-            document.getElementById('logoutLink').classList.add('oculto');
-            document.getElementById('cedulaInput').value = '';
-            mostrarMensaje('Sesión cerrada', 'info');
-        }
-
-        // ========== EVENTOS ==========
+        // === EVENTOS ===
         document.addEventListener('DOMContentLoaded', function() {
-            cargarEstructura();
+            cargarEstructura(); // Precargar estructura para agilizar
 
             const btnAcceder = document.getElementById('btnAcceder');
             const btnGuardar = document.getElementById('btnGuardarPerfil');
-            const logoutLink = document.getElementById('logoutLink');
             const cedulaInput = document.getElementById('cedulaInput');
 
-            btnAcceder.addEventListener('click', () => {
+            btnAcceder.addEventListener('click', function() {
                 const cedula = cedulaInput.value.trim();
                 if (!cedula) {
-                    mostrarMensaje('Por favor ingrese una cédula', 'error');
+                    mostrarMensaje('Por favor ingresa una cédula', 'error');
                     return;
                 }
-                iniciarSesion(cedula);
+                verificarCedula(cedula);
             });
 
-            btnGuardar.addEventListener('click', async () => {
+            btnGuardar.addEventListener('click', function() {
                 const nombres = document.getElementById('nombres').value.trim();
                 const apellidos = document.getElementById('apellidos').value.trim();
-                const nucleo = document.getElementById('nucleoSelect').value;
-                const pnf = document.getElementById('pnfSelect').value;
-                const trayecto = document.getElementById('trayectoSelect').value;
-                const semestre = document.getElementById('semestreSelect').value;
-
+                const cedula = cedulaInput.value.trim();
                 if (!nombres || !apellidos) {
                     mostrarMensaje('Complete nombres y apellidos', 'error');
                     return;
                 }
-
-                const userData = {
-                    cedula: cedulaInput.value.trim(),
-                    nombres,
-                    apellidos,
-                    nucleo,
-                    pnf,
-                    trayecto,
-                    semestre
+                const datos = {
+                    cedula: cedula,
+                    nombres: nombres,
+                    apellidos: apellidos,
+                    nucleo: document.getElementById('nucleoSelect').value,
+                    pnf: document.getElementById('pnfSelect').value,
+                    trayecto: document.getElementById('trayectoSelect').value,
+                    semestre: document.getElementById('semestreSelect').value,
+                    timestamp: new Date().toISOString()
                 };
-
-                const success = await registrarUsuario(userData);
-                if (success) {
-                    usuarioActual = userData;
-                    await cargarProgreso(userData.cedula);
-                    mostrarVistaPrincipal();
-                }
-            });
-
-            logoutLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                cerrarSesion();
+                registrarUsuario(datos);
             });
         });
     </script>
