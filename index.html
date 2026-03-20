@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ====== ESTILOS (se mantienen los mismos, se añaden algunos para la navegación) ====== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -70,6 +69,7 @@
             background: #ffffff;
             color: #0b2b5c;
             border-color: white;
+            transform: translateY(-2px);
         }
         .scroll-top {
             position: fixed;
@@ -102,6 +102,7 @@
             margin-bottom: 3rem;
             border: 1px solid #c7d2fe;
             box-shadow: 0 20px 35px -8px rgba(30,58,138,0.2);
+            transition: all 0.3s ease;
         }
         .intro-block h2 {
             font-size: 2rem;
@@ -127,11 +128,17 @@
             font-size: 1rem;
             box-shadow: 0 4px 6px -2px #b3c5ff;
         }
-        /* Layout de dos columnas */
         .main-layout {
             display: flex;
             gap: 2rem;
             margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .main-layout.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
         .sidebar {
             width: 300px;
@@ -140,6 +147,7 @@
             padding: 1.5rem;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
             height: fit-content;
+            transition: all 0.2s;
         }
         .content-area {
             flex: 1;
@@ -147,15 +155,14 @@
             border-radius: 2rem;
             padding: 2rem;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: all 0.2s;
         }
-        /* Estilos para el árbol de navegación */
         .tree {
             list-style: none;
             padding-left: 0;
         }
         .tree li {
             margin: 0.5rem 0;
-            cursor: pointer;
         }
         .tree details {
             margin-left: 0.5rem;
@@ -179,6 +186,8 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s;
         }
         .tree .tema-item.completado {
             text-decoration: line-through;
@@ -205,6 +214,7 @@
         }
         .btn-completar:hover {
             background: #059669;
+            transform: scale(1.02);
         }
         .btn-completar:disabled {
             background: #9ca3af;
@@ -216,6 +226,11 @@
             text-align: center;
             margin: 1rem 0;
             display: none;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .mensaje-exito { background: #d4edda; color: #155724; }
         .mensaje-error { background: #f8d7da; color: #721c24; }
@@ -242,6 +257,7 @@
             font-size: 0.95rem;
             background: white;
             outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
         }
         input:focus, select:focus {
             border-color: #2d7ee7;
@@ -262,6 +278,10 @@
         }
         .btn-submit:hover {
             background: #1a4880;
+            transform: translateY(-2px);
+        }
+        .btn-submit:active {
+            transform: translateY(0);
         }
         .footer-note {
             text-align: center;
@@ -269,6 +289,19 @@
             opacity: 0.8;
             font-size: 0.9rem;
             margin-top: 2rem;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3a8a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         @media (max-width: 800px) {
             .main-layout {
@@ -309,6 +342,7 @@
                 <input type="text" id="cedulaInput" placeholder="V-12345678" style="max-width: 300px; text-align: center;">
                 <input type="password" id="claveInput" placeholder="Clave (opcional)" style="max-width: 300px; text-align: center;">
                 <button class="btn-submit" id="btnAcceder" style="width: auto; padding: 0.8rem 2rem;">Acceder / Registrar</button>
+                <div id="loaderAcceso" class="loader" style="display:none;"></div>
             </div>
             <div id="mensajeExito" class="mensaje-exito"></div>
             <div id="mensajeError" class="mensaje-error"></div>
@@ -320,30 +354,29 @@
             <section class="detail-section" style="background: white; border-radius: 2.5rem; padding: 2.2rem;">
                 <h2>📚 Completa tu perfil académico</h2>
                 <div class="grid-2">
-                    <div class="field"><label>Nombres</label><input type="text" id="nombres" name="nombres" required></div>
-                    <div class="field"><label>Apellidos</label><input type="text" id="apellidos" name="apellidos" required></div>
+                    <div class="field"><label>Nombres</label><input type="text" id="nombres" required></div>
+                    <div class="field"><label>Apellidos</label><input type="text" id="apellidos" required></div>
                 </div>
                 <div class="grid-2">
-                    <div class="field"><label for="nucleoSelect">Núcleo</label><select id="nucleoSelect" name="nucleo"><option value="La Floresta">La Floresta</option><option value="Altagracia">Altagracia</option></select></div>
-                    <div class="field"><label for="pnfSelect">PNF</label><select id="pnfSelect" name="pnf"><option value="Informática">Informática</option></select></div>
+                    <div class="field"><label for="nucleoSelect">Núcleo</label><select id="nucleoSelect"><option value="La Floresta">La Floresta</option><option value="Altagracia">Altagracia</option></select></div>
+                    <div class="field"><label for="pnfSelect">PNF</label><select id="pnfSelect"><option value="Informática">Informática</option></select></div>
                 </div>
                 <div class="grid-2">
-                    <div class="field"><label for="trayectoSelect">Trayecto</label><select id="trayectoSelect" name="trayecto"><option value="Arquitectura del Computador">Arquitectura del Computador</option></select></div>
-                    <div class="field"><label for="semestreSelect">Semestre</label><select id="semestreSelect" name="semestre"><option value="I">I</option><option value="II">II</option></select></div>
+                    <div class="field"><label for="trayectoSelect">Trayecto</label><select id="trayectoSelect"><option value="Arquitectura del Computador">Arquitectura del Computador</option></select></div>
+                    <div class="field"><label for="semestreSelect">Semestre</label><select id="semestreSelect"><option value="I">I</option><option value="II">II</option></select></div>
                 </div>
                 <button class="btn-submit" id="btnGuardarPerfil">Guardar y acceder a la clase</button>
+                <div id="loaderRegistro" class="loader" style="display:none; margin:1rem auto;"></div>
             </section>
         </div>
 
         <!-- CONTENIDO PRINCIPAL (oculto inicialmente) -->
         <div id="contenidoPrincipal" class="oculto">
             <div class="main-layout">
-                <!-- Barra lateral con árbol de navegación -->
                 <div class="sidebar">
                     <h3><i class="fas fa-sitemap"></i> Índice</h3>
                     <div id="arbolNavegacion"></div>
                 </div>
-                <!-- Área de contenido del tema seleccionado -->
                 <div class="content-area">
                     <div id="contenidoTema"></div>
                     <button id="btnCompletarTema" class="btn-completar" style="display: none;">✓ Marcar como completado</button>
@@ -356,35 +389,58 @@
 
     <script>
         // ========== CONFIGURACIÓN ==========
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzc8Zzf5qjao5otrgwXdWj4xYn3hzt9mVsXSIZpdAzm8A8RVc_3Xk5wcwLssIeNog4S/exec';
+        // --- Reemplaza esta URL con la de tu Apps Script desplegado ---
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbVkZFHCiT-RiLQzyKssvwELhCHsX1vVNG4dMc6UNt_v4DnSDAqDr1TMY_6hmC1bjHKA/exec'; // <-- Cambiar por tu URL
+
         let estructuraGlobal = null;
-        let usuarioActual = { cedula: '', nombres: '', apellidos: '' };
+        let usuarioActual = { cedula: '', nombres: '', apellidos: '', nucleo: '', pnf: '', trayecto: '', semestre: '' };
         let progresoUsuario = {}; // clave: temaId -> true/false
         let temaSeleccionado = null; // objeto del tema actual
 
-        // ========== CARGAR ESTRUCTURA JSON ==========
+        // ========== FUNCIONES AUXILIARES ==========
+        function mostrarMensaje(texto, tipo, elementoId = 'mensajeInfo') {
+            const divExito = document.getElementById('mensajeExito');
+            const divError = document.getElementById('mensajeError');
+            const divInfo = document.getElementById('mensajeInfo');
+            if (!divExito || !divError || !divInfo) { alert(`${tipo.toUpperCase()}: ${texto}`); return; }
+            divExito.style.display = 'none';
+            divError.style.display = 'none';
+            divInfo.style.display = 'none';
+            let target = divInfo;
+            if (tipo === 'error') target = divError;
+            else if (tipo === 'exito') target = divExito;
+            target.textContent = texto;
+            target.style.display = 'block';
+            setTimeout(() => target.style.display = 'none', 5000);
+        }
+
+        // ========== CARGAR ESTRUCTURA ==========
         async function cargarEstructura() {
             try {
+                // Intentar cargar el JSON externo; si falla, usar estructura embebida (puedes copiar el JSON aquí)
                 const response = await fetch('estructura.json');
+                if (!response.ok) throw new Error('No se pudo cargar estructura.json');
                 estructuraGlobal = await response.json();
-                console.log('✅ Estructura cargada', estructuraGlobal);
-                // Después de cargar, construir el árbol de navegación
-                construirArbol();
+                console.log('✅ Estructura cargada');
             } catch (error) {
-                console.error('❌ Error cargando estructura.json:', error);
-                document.getElementById('arbolNavegacion').innerHTML = '<p class="mensaje-error">Error al cargar el contenido. Asegúrate de que el archivo estructura.json existe.</p>';
+                console.error('❌ Error cargando estructura.json, usando embebida', error);
+                // Aquí puedes poner un objeto embebido con la misma estructura para que funcione offline
+                // Por ahora solo mostramos error
+                mostrarMensaje('Error al cargar el contenido del curso', 'error');
+                return false;
             }
+            return true;
         }
 
         // ========== CONSTRUIR ÁRBOL DE NAVEGACIÓN ==========
         function construirArbol() {
             const contenedor = document.getElementById('arbolNavegacion');
+            if (!estructuraGlobal) return;
             contenedor.innerHTML = '';
-            const trayecto = estructuraGlobal.trayectos[0]; // solo uno por ahora
+            const trayecto = estructuraGlobal.trayectos[0];
             const ul = document.createElement('ul');
             ul.className = 'tree';
 
-            // Semestres
             trayecto.semestres.forEach(semestre => {
                 const liSem = document.createElement('li');
                 const detailsSem = document.createElement('details');
@@ -392,7 +448,6 @@
                 summarySem.innerHTML = `<i class="fas fa-calendar-alt"></i> ${semestre.titulo}`;
                 detailsSem.appendChild(summarySem);
                 const ulClases = document.createElement('ul');
-                // Clases
                 semestre.clases.forEach(clase => {
                     const liClase = document.createElement('li');
                     const detailsClase = document.createElement('details');
@@ -400,7 +455,6 @@
                     summaryClase.innerHTML = `<i class="fas fa-chalkboard"></i> ${clase.titulo}`;
                     detailsClase.appendChild(summaryClase);
                     const ulTemas = document.createElement('ul');
-                    // Temas
                     clase.temas.forEach(tema => {
                         const liTema = document.createElement('li');
                         liTema.className = 'tema-item';
@@ -428,7 +482,7 @@
             contenedor.appendChild(ul);
         }
 
-        // ========== MOSTRAR UN TEMA EN EL ÁREA DE CONTENIDO ==========
+        // ========== MOSTRAR UN TEMA ==========
         function mostrarTema(tema, clase, semestre, trayecto) {
             temaSeleccionado = { tema, clase, semestre, trayecto };
             const container = document.getElementById('contenidoTema');
@@ -450,7 +504,6 @@
             }
             container.innerHTML = html;
 
-            // Mostrar botón completar solo si no está completado
             const btnCompletar = document.getElementById('btnCompletarTema');
             if (progresoUsuario[tema.id]) {
                 btnCompletar.style.display = 'none';
@@ -459,7 +512,6 @@
                 btnCompletar.onclick = () => marcarTemaCompletado(tema);
             }
 
-            // Inicializar quiz si existe
             if (contenido.quiz) {
                 document.getElementById('responderQuiz')?.addEventListener('click', () => {
                     const seleccion = document.querySelector('input[name="quiz"]:checked');
@@ -468,7 +520,6 @@
                     const quizData = contenido.quiz;
                     if (respuesta === quizData.correcta) {
                         document.getElementById('feedbackQuiz').innerHTML = `<span style="color:green;">✅ ${quizData.feedback || '¡Correcto!'}</span>`;
-                        // Si no estaba completado, lo marcamos automáticamente
                         if (!progresoUsuario[tema.id]) marcarTemaCompletado(tema);
                     } else {
                         document.getElementById('feedbackQuiz').innerHTML = `<span style="color:red;">❌ Incorrecto. ${quizData.feedback || 'Inténtalo de nuevo.'}</span>`;
@@ -477,106 +528,194 @@
             }
         }
 
-        // ========== MARCAR TEMA COMO COMPLETADO Y GUARDAR EN GOOGLE SHEETS ==========
+        // ========== MARCAR TEMA COMPLETADO (ENVÍA AL SERVIDOR) ==========
         async function marcarTemaCompletado(tema) {
             if (progresoUsuario[tema.id]) return;
-
             const data = {
-                timestamp: new Date().toISOString(),
+                action: 'completarTema',
                 cedula: usuarioActual.cedula,
-                trayecto: temaSeleccionado.trayecto.titulo,
-                semestre: temaSeleccionado.semestre.titulo,
-                clase: temaSeleccionado.clase.titulo,
-                tema: tema.titulo,
-                completado: 'Sí'
+                tema_id: tema.id
             };
-
             try {
-                await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                const response = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    mode: 'cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-                progresoUsuario[tema.id] = true;
-                mostrarMensaje('¡Tema completado!', 'exito');
-                // Actualizar árbol visual (cambiar icono)
-                const liTema = document.querySelector(`.tema-item[data-tema-id="${tema.id}"]`);
-                if (liTema) {
-                    liTema.querySelector('i').className = 'fas fa-check-circle completado-badge';
+                const result = await response.json();
+                if (result.status === 'success') {
+                    progresoUsuario[tema.id] = true;
+                    mostrarMensaje('¡Tema completado!', 'exito');
+                    // Actualizar ícono en el árbol
+                    const liTema = document.querySelector(`.tema-item[data-tema-id="${tema.id}"]`);
+                    if (liTema) {
+                        liTema.querySelector('i').className = 'fas fa-check-circle completado-badge';
+                    }
+                    document.getElementById('btnCompletarTema').style.display = 'none';
+                } else {
+                    mostrarMensaje('Error al guardar progreso: ' + (result.message || ''), 'error');
                 }
-                document.getElementById('btnCompletarTema').style.display = 'none';
             } catch (error) {
                 console.error('Error guardando progreso:', error);
-                mostrarMensaje('Error al guardar el progreso', 'error');
+                mostrarMensaje('Error de conexión al guardar progreso', 'error');
             }
         }
 
-        // ========== FUNCIONES DE MENSAJE ==========
-        function mostrarMensaje(texto, tipo) {
-            const divExito = document.getElementById('mensajeExito');
-            const divError = document.getElementById('mensajeError');
-            const divInfo = document.getElementById('mensajeInfo');
-            if (!divExito || !divError || !divInfo) { alert(`${tipo.toUpperCase()}: ${texto}`); return; }
-            divExito.style.display = 'none';
-            divError.style.display = 'none';
-            divInfo.style.display = 'none';
-            if (tipo === 'error') {
-                divError.textContent = texto;
-                divError.style.display = 'block';
-                setTimeout(() => divError.style.display = 'none', 5000);
-            } else if (tipo === 'exito') {
-                divExito.textContent = texto;
-                divExito.style.display = 'block';
-                setTimeout(() => divExito.style.display = 'none', 5000);
-            } else {
-                divInfo.textContent = texto;
-                divInfo.style.display = 'block';
-                setTimeout(() => divInfo.style.display = 'none', 5000);
+        // ========== CARGAR PROGRESO DEL USUARIO DESDE EL SERVIDOR ==========
+        async function cargarProgreso(cedula) {
+            const url = `${APPS_SCRIPT_URL}?action=getProgreso&cedula=${encodeURIComponent(cedula)}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.status === 'success' && data.progreso) {
+                    data.progreso.forEach(item => {
+                        progresoUsuario[item.tema_id] = true;
+                    });
+                }
+                construirArbol(); // reconstruir árbol con los checkmarks
+            } catch (error) {
+                console.error('Error cargando progreso:', error);
+                mostrarMensaje('No se pudo cargar tu progreso', 'error');
             }
         }
 
-        // ========== REGISTRO Y ACCESO ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            cargarEstructura();
+        // ========== LOGIN / REGISTRO ==========
+        async function verificarUsuario(cedula, clave = '') {
+            const url = `${APPS_SCRIPT_URL}?action=getUsuario&cedula=${encodeURIComponent(cedula)}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.status === 'success' && data.usuario) {
+                    // Usuario existe
+                    usuarioActual = data.usuario;
+                    usuarioActual.cedula = cedula;
+                    return { exists: true, usuario: data.usuario };
+                } else {
+                    return { exists: false };
+                }
+            } catch (error) {
+                console.error('Error verificando usuario:', error);
+                mostrarMensaje('Error de conexión', 'error');
+                return { exists: false, error: true };
+            }
+        }
+
+        async function registrarUsuario(cedula, datos) {
+            const payload = {
+                action: 'registrarUsuario',
+                cedula: cedula,
+                nombres: datos.nombres,
+                apellidos: datos.apellidos,
+                nucleo: datos.nucleo,
+                pnf: datos.pnf,
+                trayecto: datos.trayecto,
+                semestre: datos.semestre
+            };
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    usuarioActual = { ...datos, cedula: cedula };
+                    return true;
+                } else {
+                    mostrarMensaje('Error en registro: ' + result.message, 'error');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error registrando usuario:', error);
+                mostrarMensaje('Error de conexión al registrar', 'error');
+                return false;
+            }
+        }
+
+        // ========== FLUJO PRINCIPAL ==========
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Cargar estructura del curso primero
+            const loaded = await cargarEstructura();
+            if (!loaded) return;
 
             const btnAcceder = document.getElementById('btnAcceder');
             const btnGuardar = document.getElementById('btnGuardarPerfil');
             const cedulaInput = document.getElementById('cedulaInput');
+            const claveInput = document.getElementById('claveInput');
             const datosDiv = document.getElementById('datosAcademico');
             const contenidoDiv = document.getElementById('contenidoPrincipal');
             const inicioSection = document.getElementById('inicio');
+            const loaderAcceso = document.getElementById('loaderAcceso');
+            const loaderRegistro = document.getElementById('loaderRegistro');
 
-            btnAcceder.addEventListener('click', function() {
+            btnAcceder.addEventListener('click', async function() {
                 const cedula = cedulaInput.value.trim();
                 if (!cedula) {
                     mostrarMensaje('Por favor ingrese una cédula', 'error');
                     return;
                 }
-                usuarioActual.cedula = cedula;
-                // Simulamos que es nuevo usuario (siempre muestra formulario)
-                mostrarMensaje('Nuevo usuario. Complete su perfil.', 'info');
-                inicioSection.style.display = 'none';
-                datosDiv.classList.remove('oculto');
+                const clave = claveInput.value.trim();
+
+                // Mostrar loader
+                loaderAcceso.style.display = 'block';
+                btnAcceder.disabled = true;
+
+                const resultado = await verificarUsuario(cedula, clave);
+                loaderAcceso.style.display = 'none';
+                btnAcceder.disabled = false;
+
+                if (resultado.error) return;
+
+                if (resultado.exists) {
+                    // Usuario existente: cargar progreso y mostrar contenido
+                    usuarioActual = resultado.usuario;
+                    usuarioActual.cedula = cedula;
+                    inicioSection.style.display = 'none';
+                    contenidoDiv.classList.remove('oculto');
+                    document.querySelector('.main-layout').classList.add('visible');
+                    await cargarProgreso(cedula);
+                    mostrarMensaje(`Bienvenido de nuevo, ${usuarioActual.nombres} ${usuarioActual.apellidos}`, 'exito');
+                } else {
+                    // Nuevo usuario: mostrar formulario de registro
+                    inicioSection.style.display = 'none';
+                    datosDiv.classList.remove('oculto');
+                    mostrarMensaje('Nuevo usuario. Completa tu perfil.', 'info');
+                }
             });
 
             btnGuardar.addEventListener('click', async function() {
                 const nombres = document.getElementById('nombres').value.trim();
                 const apellidos = document.getElementById('apellidos').value.trim();
+                const nucleo = document.getElementById('nucleoSelect').value;
+                const pnf = document.getElementById('pnfSelect').value;
+                const trayecto = document.getElementById('trayectoSelect').value;
+                const semestre = document.getElementById('semestreSelect').value;
+
                 if (!nombres || !apellidos) {
                     mostrarMensaje('Complete nombres y apellidos', 'error');
                     return;
                 }
-                usuarioActual.nombres = nombres;
-                usuarioActual.apellidos = apellidos;
 
-                // Guardar usuario en hoja (opcional, puedes enviar también)
-                // Aquí solo pasamos a la vista principal
-                datosDiv.classList.add('oculto');
-                contenidoDiv.classList.remove('oculto');
-                mostrarMensaje(`Bienvenido, ${nombres} ${apellidos}`, 'exito');
-                // Simular carga de progreso (por ahora vacío)
-                progresoUsuario = {};
+                loaderRegistro.style.display = 'block';
+                btnGuardar.disabled = true;
+
+                const registrado = await registrarUsuario(usuarioActual.cedula, {
+                    nombres, apellidos, nucleo, pnf, trayecto, semestre
+                });
+
+                loaderRegistro.style.display = 'none';
+                btnGuardar.disabled = false;
+
+                if (registrado) {
+                    datosDiv.classList.add('oculto');
+                    contenidoDiv.classList.remove('oculto');
+                    document.querySelector('.main-layout').classList.add('visible');
+                    mostrarMensaje(`Bienvenido, ${nombres} ${apellidos}`, 'exito');
+                    // Inicializar progreso vacío
+                    construirArbol();
+                }
             });
         });
     </script>
