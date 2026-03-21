@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Estilos (igual que antes, se añaden algunos para el panel de admin) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -19,8 +20,39 @@
             transition: background 0.3s, color 0.3s;
         }
         body.dark-mode {
-            background: #0a0c15;
+            background: #0f172a;
             color: #e2e8f0;
+        }
+        body.dark-mode .sidebar,
+        body.dark-mode .content-area,
+        body.dark-mode .intro-block,
+        body.dark-mode .header {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+        body.dark-mode .sidebar,
+        body.dark-mode .content-area {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+        body.dark-mode .badge-item {
+            background: #334155;
+            color: #e2e8f0;
+        }
+        body.dark-mode .tree .tema-item:hover {
+            background: #334155;
+        }
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background: #0f172a;
+            border-color: #475569;
+            color: #e2e8f0;
+        }
+        body.dark-mode input:focus,
+        body.dark-mode select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
         }
         .container {
             max-width: 1400px;
@@ -30,20 +62,21 @@
         .header {
             background: linear-gradient(135deg, #0b2b5c, #1e3a8a, #3b5b9b);
             border-radius: 2rem 2rem 1rem 1rem;
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
+            padding: 2rem 2rem 1.5rem;
+            margin-bottom: 2.5rem;
             color: white;
             box-shadow: 0 20px 30px -10px rgba(0,40,100,0.4);
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
+            transition: background 0.3s;
         }
         body.dark-mode .header {
-            background: linear-gradient(135deg, #111827, #1f2937, #374151);
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
         }
         .logo h1 {
-            font-size: 2rem;
+            font-size: 2.4rem;
             font-weight: 800;
             letter-spacing: -0.02em;
             background: linear-gradient(to right, #fff, #dbeafe);
@@ -51,39 +84,42 @@
             -webkit-text-fill-color: transparent;
         }
         .logo span {
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 400;
             color: #bfdbfe;
+            display: block;
         }
         .nav {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
+            justify-content: flex-end;
             align-items: center;
         }
-        .nav button, .nav a {
-            background: rgba(255,255,255,0.12);
-            border: none;
-            color: white;
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(4px);
-            font-weight: 500;
+        .nav a, .nav button {
+            color: #fff;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 3rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(4px);
+            transition: 0.2s;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            font-family: inherit;
         }
-        .nav button:hover, .nav a:hover {
-            background: white;
+        .nav a:hover, .nav button:hover {
+            background: #ffffff;
             color: #0b2b5c;
+            border-color: white;
         }
-        body.dark-mode .nav button:hover, body.dark-mode .nav a:hover {
+        body.dark-mode .nav a:hover,
+        body.dark-mode .nav button:hover {
             background: #3b82f6;
             color: white;
+            border-color: #3b82f6;
         }
         .scroll-top {
             position: fixed;
@@ -91,16 +127,19 @@
             right: 1.5rem;
             background: #1e3a8a;
             color: white;
-            width: 3rem;
-            height: 3rem;
+            width: 3.5rem;
+            height: 3.5rem;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(0,30,70,0.4);
             z-index: 100;
-            cursor: pointer;
             transition: 0.2s;
+            border: 2px solid white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            opacity: 0.9;
         }
         .scroll-top:hover {
             background: #2563eb;
@@ -108,23 +147,39 @@
         }
         .intro-block {
             background: linear-gradient(145deg, #ffffff, #eef2ff);
-            border-radius: 2rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            border-radius: 2.5rem;
+            padding: 2.2rem;
+            margin-bottom: 3rem;
             border: 1px solid #c7d2fe;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-        }
-        body.dark-mode .intro-block {
-            background: #1e293b;
-            border-color: #334155;
+            box-shadow: 0 20px 35px -8px rgba(30,58,138,0.2);
+            transition: background 0.3s;
         }
         .intro-block h2 {
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 700;
             color: #0b2b5c;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
         body.dark-mode .intro-block h2 {
             color: #bfdbfe;
+        }
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1.8rem 0;
+        }
+        .badge-item {
+            background: #dbeafe;
+            border-radius: 3rem;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px -2px #b3c5ff;
         }
         .main-layout {
             display: flex;
@@ -132,25 +187,21 @@
             margin-top: 2rem;
         }
         .sidebar {
-            width: 280px;
+            width: 300px;
             background: white;
-            border-radius: 1.5rem;
+            border-radius: 2rem;
             padding: 1.5rem;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
             height: fit-content;
-        }
-        body.dark-mode .sidebar {
-            background: #1e293b;
+            transition: background 0.3s;
         }
         .content-area {
             flex: 1;
             background: white;
-            border-radius: 1.5rem;
+            border-radius: 2rem;
             padding: 2rem;
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-        }
-        body.dark-mode .content-area {
-            background: #1e293b;
+            transition: background 0.3s;
         }
         .tree {
             list-style: none;
@@ -158,6 +209,7 @@
         }
         .tree li {
             margin: 0.5rem 0;
+            cursor: pointer;
         }
         .tree details {
             margin-left: 0.5rem;
@@ -174,25 +226,27 @@
         body.dark-mode .tree summary {
             color: #93c5fd;
         }
+        .tree summary:hover {
+            color: #2563eb;
+        }
         .tree .tema-item {
             padding-left: 1.8rem;
             margin: 0.3rem 0;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.9rem;
-            cursor: pointer;
+            font-size: 0.95rem;
         }
-        .tree .tema-item.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
+        .tree .tema-item.completado {
+            text-decoration: line-through;
+            opacity: 0.7;
         }
-        .tree .tema-item:hover:not(.disabled) {
+        .tree .tema-item:hover {
             background: #eef2ff;
             border-radius: 1rem;
         }
         .completado-badge {
+            font-size: 0.8rem;
             color: #10b981;
         }
         .btn-completar {
@@ -204,9 +258,17 @@
             cursor: pointer;
             font-weight: 500;
             margin-top: 1rem;
+            transition: 0.2s;
+        }
+        .btn-completar:hover {
+            background: #059669;
+        }
+        .btn-completar:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
         }
         .mensaje-exito, .mensaje-error, .mensaje-info {
-            padding: 0.8rem;
+            padding: 1rem;
             border-radius: 40px;
             text-align: center;
             margin: 1rem 0;
@@ -219,60 +281,65 @@
         .grid-2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            gap: 1.5rem;
         }
         .field {
             display: flex;
             flex-direction: column;
-            gap: 0.3rem;
+            gap: 0.4rem;
         }
         label {
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
         input, select, textarea {
-            padding: 0.7rem 1rem;
-            border: 1px solid #dde4ec;
-            border-radius: 1rem;
-            font-size: 0.9rem;
+            padding: 0.85rem 1rem;
+            border: 1.5px solid #dde4ec;
+            border-radius: 18px;
+            font-size: 0.95rem;
             background: white;
+            outline: none;
+            transition: 0.2s;
         }
-        body.dark-mode input, body.dark-mode select, body.dark-mode textarea {
-            background: #0f172a;
-            border-color: #475569;
-            color: #e2e8f0;
+        input:focus, select:focus {
+            border-color: #2d7ee7;
+            box-shadow: 0 0 0 3px rgba(45,126,231,0.15);
         }
         .btn-submit {
             background: #0b2b4f;
             color: white;
             font-weight: 700;
-            padding: 0.8rem 1.5rem;
+            font-size: 1.1rem;
+            padding: 1.2rem 2.5rem;
             border: none;
-            border-radius: 2rem;
-            cursor: pointer;
+            border-radius: 40px;
             width: 100%;
-            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 2.5rem;
+        }
+        .btn-submit:hover {
+            background: #1a4880;
         }
         .footer-note {
             text-align: center;
-            color: #64748b;
-            font-size: 0.8rem;
+            color: inherit;
+            opacity: 0.8;
+            font-size: 0.9rem;
             margin-top: 2rem;
         }
-        body.dark-mode .footer-note {
-            color: #94a3b8;
-        }
+        /* Animaciones */
         .pulse-dots {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             justify-content: center;
-            margin: 10px 0;
+            margin: 20px 0;
         }
         .pulse-dots span {
-            width: 12px;
-            height: 12px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: #3b82f6;
+            background: #3b82f6; /* azul */
             animation: pulse 1.4s infinite both;
         }
         @keyframes pulse {
@@ -281,11 +348,12 @@
         }
         .auto-verify-indicator {
             position: absolute;
-            right: 12px;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             font-size: 16px;
             opacity: 0;
+            transition: 0.2s;
         }
         .auto-verify-indicator.visible { opacity: 1; }
         .auto-verify-indicator.verifying { color: #3b82f6; }
@@ -293,39 +361,44 @@
         .auto-verify-indicator.error { color: #ef4444; }
         .toast-success {
             position: fixed;
-            top: 20px;
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
             background: #10b981;
             color: white;
-            padding: 12px 24px;
-            border-radius: 40px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            padding: 16px 32px;
+            border-radius: 60px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             z-index: 1000;
             display: flex;
-            gap: 8px;
-            animation: slideDown 0.3s ease;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn 0.4s forwards;
         }
-        @keyframes slideDown {
-            from { top: -50px; opacity: 0; }
-            to { top: 20px; opacity: 1; }
+        @keyframes toastIn {
+            from { top: -80px; opacity: 0; }
+            to { top: 30px; opacity: 1; }
         }
-        /* Drawer */
+
+        /* Panel deslizable (drawer) */
         .drawer {
             position: fixed;
             top: 0;
-            left: -400px;
-            width: 380px;
+            left: -320px;
+            width: 300px;
             height: 100%;
             background: white;
-            box-shadow: 2px 0 20px rgba(0,0,0,0.2);
+            box-shadow: 2px 0 12px rgba(0,0,0,0.2);
             z-index: 200;
             transition: left 0.3s ease;
-            padding: 1.5rem;
-            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
         body.dark-mode .drawer {
             background: #1e293b;
+            color: #e2e8f0;
         }
         .drawer.open {
             left: 0;
@@ -343,183 +416,275 @@
         .drawer-overlay.open {
             display: block;
         }
+        .drawer h3 {
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 0.5rem;
+        }
+        .drawer .user-info p {
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
         .close-drawer {
             background: none;
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            float: right;
+            align-self: flex-end;
+            color: inherit;
         }
-        .drawer h3 {
-            margin-top: 0;
+
+        /* Panel de Admin (tutor) */
+        .admin-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            z-index: 300;
+            padding: 2rem;
+            overflow-y: auto;
+            display: none;
+        }
+        body.dark-mode .admin-panel {
+            background: #1e293b;
+        }
+        .admin-panel.open {
+            display: block;
+        }
+        .admin-panel h3 {
+            margin-bottom: 1rem;
             border-bottom: 2px solid #3b82f6;
             padding-bottom: 0.5rem;
         }
-        .tutor-section {
-            margin-bottom: 2rem;
+        .admin-panel .close-admin {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
         }
-        .asistencia-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #ccc;
         }
-        .asistencia-table th, .asistencia-table td {
-            border: 1px solid #ddd;
-            padding: 0.5rem;
-            text-align: left;
+        .admin-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-weight: 600;
         }
-        .asistencia-table th {
+        .admin-tab.active {
+            border-bottom: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+        .admin-tab-content {
+            display: none;
+        }
+        .admin-tab-content.active {
+            display: block;
+        }
+        .clase-item {
             background: #f1f5f9;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
-        body.dark-mode .asistencia-table th {
+        body.dark-mode .clase-item {
             background: #334155;
         }
+        .attendance-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .attendance-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid #ddd;
+        }
+
         @media (max-width: 800px) {
-            .main-layout { flex-direction: column; }
-            .sidebar { width: 100%; }
-            .drawer { width: 100%; left: -100%; }
+            .main-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'});"><i class="fas fa-arrow-up"></i></div>
+
     <div class="container">
         <header class="header">
             <div class="logo">
-                <h1>Arquitectura del Computador <i class="fas fa-microchip"></i></h1>
-                <span>Educación Especializada · Gerard Kenny José Sieveres B. · SGO</span>
+                <h1>Arquitectura del Computador <i class="fas fa-microchip" style="color:#bfdbfe;"></i></h1>
+                <span>Aprendizaje Progresivo Tangible · Modelo APT</span>
             </div>
             <nav class="nav">
                 <button id="profileBtn"><i class="fas fa-user-circle"></i> Mi perfil</button>
-                <button id="attendanceBtn"><i class="fas fa-calendar-check"></i> Asistencia</button>
+                <button id="attendanceBtn" class="hidden-attendance"><i class="fas fa-clipboard-list"></i> Asistencia</button>
                 <button id="darkModeToggle"><i class="fas fa-moon"></i> Modo oscuro</button>
-                <button id="tutorPanelBtn" style="display:none;"><i class="fas fa-chalkboard-user"></i> Tutor</button>
                 <a href="#inicio"><i class="fas fa-rocket"></i> Inicio</a>
                 <a href="#clase"><i class="fas fa-book-open"></i> Clase</a>
+                <button id="adminToggleBtn" style="display:none;"><i class="fas fa-cog"></i> Admin</button>
+                <span id="hiddenAdminIcon" style="cursor:pointer; opacity:0.5; font-size:1.2rem;">⚙️</span>
             </nav>
         </header>
 
-        <!-- LOGIN -->
-        <div id="loginSection" class="intro-block">
+        <!-- SECCIÓN DE VERIFICACIÓN DE CÉDULA (con contraseña) -->
+        <section id="verificationSection" class="intro-block">
             <h2><i class="fas fa-shield-alt"></i> Acceso a la Materia</h2>
-            <div style="display:flex; flex-direction:column; align-items:center; gap:1rem;">
+            <p style="font-size:1.2rem; margin-bottom:1.5rem;">Ingresa tu cédula para comenzar.</p>
+            <div class="badge-row">
+                <span class="badge-item"><i class="fas fa-id-card"></i> Cédula</span>
+                <span class="badge-item"><i class="fas fa-key"></i> Contraseña</span>
+                <span class="badge-item"><i class="fas fa-arrow-right"></i> Acceder</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
                 <div style="position:relative; width:100%; max-width:300px;">
-                    <input type="text" id="cedulaInput" placeholder="Cédula" style="text-align:center;">
+                    <input type="text" id="cedulaInput" placeholder="V-12345678" style="text-align: center;">
                     <i class="fas auto-verify-indicator" id="verifyIndicator"></i>
                 </div>
-                <div style="position:relative; width:100%; max-width:300px;">
-                    <input type="password" id="passwordInput" placeholder="Contraseña" style="text-align:center;">
+                <div id="passwordContainer" style="display:none; width:100%; max-width:300px;">
+                    <input type="password" id="passwordInput" placeholder="Contraseña" style="text-align: center;">
                 </div>
-                <div id="loginAnimation" class="pulse-dots hidden"><span></span><span></span><span></span></div>
-                <div id="loginStatus" class="mensaje-info" style="display:none;"></div>
-                <button id="loginBtn" class="btn-submit" style="width:auto; padding:0.6rem 2rem;">Ingresar</button>
-                <button id="registerNewBtn" class="btn-submit" style="background:#6c757d; width:auto; margin-top:0.5rem;">Registrarse</button>
+                <div id="verificationAnimation" class="pulse-dots hidden">
+                    <span></span><span></span><span></span>
+                </div>
+                <div id="verificationStatus" class="mensaje-info" style="display:none;"></div>
+                <button type="button" id="registerDirectBtn" class="btn-submit" style="display:none; width: auto; padding: 0.8rem 2rem;">
+                    <i class="fas fa-user-plus"></i> Registrar nuevo usuario
+                </button>
+                <button type="button" id="loginBtn" class="btn-submit" style="display:none; width: auto; padding: 0.8rem 2rem;">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+                </button>
             </div>
+        </section>
+
+        <!-- FORMULARIO DE REGISTRO (con correo y contraseña) -->
+        <div id="registrationSection" class="oculto">
+            <section class="intro-block">
+                <h2>📚 Completa tu perfil académico</h2>
+                <div class="grid-2">
+                    <div class="field"><label>Nombres *</label><input type="text" id="nombres"></div>
+                    <div class="field"><label>Apellidos *</label><input type="text" id="apellidos"></div>
+                </div>
+                <div class="grid-2">
+                    <div class="field"><label>Núcleo *</label><select id="nucleo"><option value="La Floresta">La Floresta</option><option value="Altagracia">Altagracia</option></select></div>
+                    <div class="field"><label>PNF *</label><select id="pnf"><option value="Informática">Informática</option></select></div>
+                </div>
+                <div class="grid-2">
+                    <div class="field"><label>Trayecto *</label><select id="trayecto"><option value="Arquitectura del Computador">Arquitectura del Computador</option></select></div>
+                    <div class="field"><label>Semestre *</label><select id="semestre"><option value="I">I</option><option value="II">II</option></select></div>
+                </div>
+                <div class="grid-2">
+                    <div class="field"><label>Correo Electrónico *</label><input type="email" id="email"></div>
+                    <div class="field"><label>Contraseña *</label><input type="password" id="regPassword"></div>
+                </div>
+                <button id="registerUserBtn" class="btn-submit">Guardar y acceder</button>
+            </section>
         </div>
 
-        <!-- REGISTRO ESTUDIANTE -->
-        <div id="registrationStudent" class="oculto intro-block">
-            <h2>📝 Registro de Estudiante</h2>
-            <div class="grid-2">
-                <div class="field"><label>Cédula *</label><input type="text" id="regCedula"></div>
-                <div class="field"><label>Nombres *</label><input type="text" id="regNombres"></div>
-                <div class="field"><label>Apellidos *</label><input type="text" id="regApellidos"></div>
-                <div class="field"><label>Correo *</label><input type="email" id="regEmail"></div>
-                <div class="field"><label>Contraseña *</label><input type="password" id="regPassword"></div>
-                <div class="field"><label>Núcleo *</label><select id="regNucleo"><option>La Floresta</option><option>Altagracia</option></select></div>
-                <div class="field"><label>PNF *</label><select id="regPnf"><option>Informática</option></select></div>
-                <div class="field"><label>Trayecto *</label><select id="regTrayecto"><option>Arquitectura del Computador</option></select></div>
-                <div class="field"><label>Semestre *</label><select id="regSemestre"><option>I</option><option>II</option></select></div>
-            </div>
-            <button id="submitStudentReg" class="btn-submit">Guardar</button>
-            <button id="backToLogin" class="btn-submit" style="background:#6c757d; margin-top:0.5rem;">Volver</button>
-        </div>
-
-        <!-- REGISTRO TUTOR (solo con clave maestra) -->
-        <div id="registrationTutor" class="oculto intro-block">
-            <h2>👨‍🏫 Registro de Tutor</h2>
-            <div class="grid-2">
-                <div class="field"><label>Cédula *</label><input type="text" id="tutorCedula"></div>
-                <div class="field"><label>Nombre *</label><input type="text" id="tutorNombre"></div>
-                <div class="field"><label>Contraseña *</label><input type="password" id="tutorPassword"></div>
-                <div class="field"><label>Clave maestra *</label><input type="password" id="masterKey" placeholder="admin123"></div>
-            </div>
-            <button id="submitTutorReg" class="btn-submit">Registrar Tutor</button>
-            <button id="backToLoginFromTutor" class="btn-submit" style="background:#6c757d; margin-top:0.5rem;">Volver</button>
-        </div>
-
-        <!-- CONTENIDO PRINCIPAL (después de login) -->
-        <div id="mainContent" class="oculto">
+        <!-- CONTENIDO PRINCIPAL (oculto inicialmente) -->
+        <div id="contenidoPrincipal" class="oculto">
             <div class="main-layout">
                 <div class="sidebar">
                     <h3><i class="fas fa-sitemap"></i> Índice</h3>
-                    <div id="treeContainer"></div>
+                    <div id="arbolNavegacion"></div>
                 </div>
                 <div class="content-area">
-                    <div id="topicContent"></div>
-                    <button id="completeTopicBtn" class="btn-completar" style="display:none;">✓ Marcar como completado</button>
+                    <div id="contenidoTema"></div>
+                    <button id="btnCompletarTema" class="btn-completar" style="display: none;">✓ Marcar como completado</button>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL DE ASISTENCIA -->
-        <div id="attendancePanel" class="oculto intro-block">
-            <h2><i class="fas fa-clipboard-list"></i> Lista de Asistencia</h2>
-            <div class="grid-2">
-                <div class="field"><label>Fecha</label><input type="date" id="attendanceDate"></div>
-                <div class="field"><label>Clase</label><select id="attendanceClass"></select></div>
-            </div>
-            <div id="attendanceList"></div>
-            <button id="saveAttendanceBtn" class="btn-submit">Guardar Asistencia</button>
-        </div>
-
-        <!-- PANEL DE TUTOR -->
-        <div id="tutorPanel" class="oculto intro-block">
-            <h2><i class="fas fa-chalkboard-user"></i> Panel del Tutor</h2>
-            <div class="tutor-section">
-                <h3>Editar estructura de la materia</h3>
-                <textarea id="estructuraJson" rows="12" style="width:100%; font-family:monospace;"></textarea>
-                <button id="saveEstructuraBtn" class="btn-submit">Guardar estructura</button>
-            </div>
-            <div class="tutor-section">
-                <h3>Configurar fechas de clases</h3>
-                <div id="clasesConfigContainer"></div>
-                <button id="saveClasesBtn" class="btn-submit">Guardar configuración</button>
-            </div>
-        </div>
-
-        <div class="footer-note">Educación Especializada · Gerard Kenny José Sieveres B. · SGO</div>
+        <div class="footer-note">⚡ Educación Especializada · Gerard Kenny José Sieveres B. · SGO</div>
     </div>
 
-    <!-- Drawer perfil -->
+    <!-- Panel deslizable (drawer) -->
     <div class="drawer-overlay" id="drawerOverlay"></div>
     <div class="drawer" id="profileDrawer">
         <button class="close-drawer" id="closeDrawerBtn">&times;</button>
         <h3><i class="fas fa-user-graduate"></i> Mi perfil</h3>
-        <div id="drawerInfo"></div>
+        <div class="user-info" id="drawerUserInfo">
+            <p><i class="fas fa-id-card"></i> <strong>Cédula:</strong> <span id="drawerCedula">-</span></p>
+            <p><i class="fas fa-user"></i> <strong>Nombre:</strong> <span id="drawerNombre">-</span></p>
+            <p><i class="fas fa-envelope"></i> <strong>Correo:</strong> <span id="drawerEmail">-</span></p>
+            <p><i class="fas fa-university"></i> <strong>PNF:</strong> <span id="drawerPnf">-</span></p>
+            <p><i class="fas fa-route"></i> <strong>Trayecto:</strong> <span id="drawerTrayecto">-</span></p>
+            <p><i class="fas fa-calendar-alt"></i> <strong>Semestre:</strong> <span id="drawerSemestre">-</span></p>
+        </div>
     </div>
 
-    <div id="toast" class="toast-success" style="display:none;"><i class="fas fa-check-circle"></i> <span></span></div>
+    <!-- Panel de Administración (Tutor) -->
+    <div id="adminPanel" class="admin-panel">
+        <button class="close-admin" id="closeAdminBtn">&times;</button>
+        <h3>Panel de Tutor</h3>
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="estructura">Estructura</button>
+            <button class="admin-tab" data-tab="fechas">Fechas de Clases</button>
+            <button class="admin-tab" data-tab="asistencia">Asistencia</button>
+        </div>
+        <div id="tabEstructura" class="admin-tab-content active">
+            <h4>Editar estructura de semestres/clases/temas (JSON)</h4>
+            <textarea id="estructuraJson" rows="15" style="width:100%; font-family:monospace;"></textarea>
+            <button id="guardarEstructuraBtn" class="btn-submit" style="margin-top:1rem;">Guardar Estructura</button>
+        </div>
+        <div id="tabFechas" class="admin-tab-content">
+            <h4>Configurar fechas de habilitación de clases</h4>
+            <div id="clasesFechasContainer"></div>
+            <button id="guardarFechasBtn" class="btn-submit" style="margin-top:1rem;">Guardar Fechas</button>
+        </div>
+        <div id="tabAsistencia" class="admin-tab-content">
+            <h4>Tomar asistencia</h4>
+            <div>
+                <label>Fecha: <input type="date" id="asistenciaFecha"></label>
+                <button id="cargarAsistenciaBtn">Cargar estudiantes</button>
+            </div>
+            <div id="asistenciaLista" class="attendance-list"></div>
+            <button id="guardarAsistenciaBtn" class="btn-submit">Guardar Asistencia</button>
+        </div>
+    </div>
+
+    <!-- Toast de éxito -->
+    <div id="toast" class="toast-success" style="display: none;"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
 
     <script>
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby4SoY_cT48s1r0GZc9Jo8p0SRBadG5OmMWz1tpcGl5oBdQTTIMfJKj8UrhNiJk4nHeMA/exec";
-        let usuario = null; // { tipo, cedula, nombres, ... }
-        let estructura = null;
-        let progreso = {};
-        let clasesConfig = [];
+        // CONFIGURACIÓN - URL DE APPS SCRIPT (DEBES REEMPLAZARLA)
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwFd8A2DHU4dQckQabVikH7T_qn9GrI_Ws7fgc-6_3rLuTIWLLfKlU_fE4hCclQygX6xA/exec";
+
+        let usuarioActual = { cedula: '', nombres: '', apellidos: '', nucleo: '', pnf: '', trayecto: '', semestre: '', email: '', rol: '' };
+        let estructuraGlobal = null;
+        let progresoUsuario = {};
         let temaSeleccionado = null;
         let verificationTimeout = null;
+        let tutorAuthenticated = false; // para panel de admin
 
-        // Helper
-        function mostrarToast(msg) {
+        // ========== FUNCIONES DE UI ==========
+        function mostrarToast(mensaje, tipo = 'exito') {
             const toast = document.getElementById('toast');
-            toast.querySelector('span').innerText = msg;
+            const msgSpan = document.getElementById('toastMsg');
+            msgSpan.innerText = mensaje;
             toast.style.display = 'flex';
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
-        function mostrarMensaje(el, texto, tipo) {
-            const div = document.getElementById(el);
+        function mostrarMensaje(texto, tipo, targetId = 'verificationStatus') {
+            const div = document.getElementById(targetId);
             if (!div) return;
             div.style.display = 'block';
             div.className = `mensaje-${tipo}`;
@@ -527,446 +692,607 @@
             setTimeout(() => div.style.display = 'none', 5000);
         }
 
-        // Cargar estructura desde Apps Script
-        async function cargarEstructura() {
+        function actualizarDrawer() {
+            document.getElementById('drawerCedula').innerText = usuarioActual.cedula || '-';
+            document.getElementById('drawerNombre').innerText = `${usuarioActual.nombres || ''} ${usuarioActual.apellidos || ''}`.trim() || '-';
+            document.getElementById('drawerEmail').innerText = usuarioActual.email || '-';
+            document.getElementById('drawerPnf').innerText = usuarioActual.pnf || '-';
+            document.getElementById('drawerTrayecto').innerText = usuarioActual.trayecto || '-';
+            document.getElementById('drawerSemestre').innerText = usuarioActual.semestre || '-';
+        }
+
+        // ========== VERIFICACIÓN DE CÉDULA (ahora con contraseña) ==========
+        let pendingCedulaData = null;
+        function autoVerifyCedula(cedula) {
+            const indicator = document.getElementById('verifyIndicator');
+            const statusDiv = document.getElementById('verificationStatus');
+            const registerBtn = document.getElementById('registerDirectBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            const passwordContainer = document.getElementById('passwordContainer');
+            const animDiv = document.getElementById('verificationAnimation');
+
+            clearTimeout(verificationTimeout);
+            if (statusDiv) statusDiv.style.display = 'none';
+            registerBtn.style.display = 'none';
+            loginBtn.style.display = 'none';
+            passwordContainer.style.display = 'none';
+            indicator.innerHTML = '';
+            indicator.classList.remove('visible', 'verifying', 'verified', 'error');
+            if (animDiv) animDiv.classList.add('hidden');
+
+            if (cedula.length < 6) return;
+
+            indicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            indicator.classList.add('visible', 'verifying');
+            if (animDiv) animDiv.classList.remove('hidden');
+
+            verificationTimeout = setTimeout(() => {
+                fetch(`${APPS_SCRIPT_URL}?cedula=${encodeURIComponent(cedula)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (animDiv) animDiv.classList.add('hidden');
+                        indicator.classList.remove('verifying');
+                        if (data.exists) {
+                            // Usuario existe, pedir contraseña
+                            pendingCedulaData = data;
+                            statusDiv.className = 'mensaje-info';
+                            statusDiv.innerHTML = '<i class="fas fa-info-circle"></i> Usuario encontrado. Ingresa tu contraseña.';
+                            statusDiv.style.display = 'block';
+                            indicator.classList.add('verified');
+                            passwordContainer.style.display = 'block';
+                            loginBtn.style.display = 'inline-block';
+                            registerBtn.style.display = 'none';
+                        } else {
+                            // Usuario no existe, mostrar registro
+                            statusDiv.className = 'mensaje-info';
+                            statusDiv.innerHTML = '<i class="fas fa-info-circle"></i> Usuario no registrado. Completa el registro.';
+                            statusDiv.style.display = 'block';
+                            indicator.classList.add('error');
+                            registerBtn.style.display = 'inline-block';
+                            passwordContainer.style.display = 'none';
+                            loginBtn.style.display = 'none';
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        if (animDiv) animDiv.classList.add('hidden');
+                        indicator.classList.remove('verifying');
+                        statusDiv.className = 'mensaje-error';
+                        statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> Error de conexión con el servidor.';
+                        statusDiv.style.display = 'block';
+                        indicator.classList.add('error');
+                    });
+            }, 700);
+        }
+
+        function loginWithPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (!password) {
+                mostrarMensaje('Ingresa la contraseña', 'error');
+                return;
+            }
+            if (!pendingCedulaData) return;
+
+            // Verificar contraseña contra el dato guardado (debe venir del script)
+            fetch(`${APPS_SCRIPT_URL}?cedula=${pendingCedulaData.cedula}&password=${encodeURIComponent(password)}&accion=verificar`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        usuarioActual = {
+                            cedula: pendingCedulaData.cedula,
+                            nombres: pendingCedulaData.nombres,
+                            apellidos: pendingCedulaData.apellidos,
+                            nucleo: pendingCedulaData.nucleo,
+                            pnf: pendingCedulaData.pnf,
+                            trayecto: pendingCedulaData.trayecto,
+                            semestre: pendingCedulaData.semestre,
+                            email: pendingCedulaData.email,
+                            rol: pendingCedulaData.rol
+                        };
+                        actualizarDrawer();
+                        cargarProgresoUsuario(usuarioActual.cedula).then(() => {
+                            document.getElementById('verificationSection').classList.add('hidden');
+                            document.getElementById('contenidoPrincipal').classList.remove('oculto');
+                            // Mostrar botón de admin si es tutor
+                            if (usuarioActual.rol === 'tutor') {
+                                document.getElementById('adminToggleBtn').style.display = 'inline-block';
+                                document.getElementById('hiddenAdminIcon').style.display = 'none';
+                            } else {
+                                document.getElementById('adminToggleBtn').style.display = 'none';
+                                document.getElementById('hiddenAdminIcon').style.display = 'inline-block';
+                            }
+                            cargarEstructuraYMostrar();
+                        });
+                    } else {
+                        mostrarMensaje('Contraseña incorrecta', 'error');
+                    }
+                })
+                .catch(err => {
+                    mostrarMensaje('Error al verificar contraseña: ' + err.message, 'error');
+                });
+        }
+
+        // ========== REGISTRO DE NUEVO USUARIO ==========
+        async function registrarUsuario() {
+            const cedula = document.getElementById('cedulaInput').value.trim();
+            const nombres = document.getElementById('nombres').value.trim();
+            const apellidos = document.getElementById('apellidos').value.trim();
+            const nucleo = document.getElementById('nucleo').value;
+            const pnf = document.getElementById('pnf').value;
+            const trayecto = document.getElementById('trayecto').value;
+            const semestre = document.getElementById('semestre').value;
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('regPassword').value;
+
+            if (!cedula || !nombres || !apellidos || !nucleo || !pnf || !trayecto || !semestre || !email || !password) {
+                mostrarMensaje('Por favor completa todos los campos', 'error', 'verificationStatus');
+                return false;
+            }
+
+            const formData = new FormData();
+            formData.append('accion', 'registro');
+            formData.append('cedula', cedula);
+            formData.append('nombres', nombres);
+            formData.append('apellidos', apellidos);
+            formData.append('nucleo', nucleo);
+            formData.append('pnf', pnf);
+            formData.append('trayecto', trayecto);
+            formData.append('semestre', semestre);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('rol', 'estudiante'); // por defecto
+
             try {
-                const res = await fetch(`${APPS_SCRIPT_URL}?accion=estructura`);
-                estructura = await res.json();
-                return estructura;
-            } catch(e) {
-                console.error(e);
-                mostrarMensaje('loginStatus', 'Error al cargar contenido', 'error');
-                return null;
+                const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    usuarioActual = { cedula, nombres, apellidos, nucleo, pnf, trayecto, semestre, email, rol: 'estudiante' };
+                    actualizarDrawer();
+                    mostrarToast('Registro exitoso. Cargando contenido...');
+                    progresoUsuario = {};
+                    document.getElementById('registrationSection').classList.add('oculto');
+                    document.getElementById('contenidoPrincipal').classList.remove('oculto');
+                    cargarEstructuraYMostrar();
+                    return true;
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                mostrarMensaje('Error al registrar: ' + err.message, 'error', 'verificationStatus');
+                return false;
             }
         }
 
-        async function cargarClasesConfig() {
+        // ========== GUARDAR PROGRESO ==========
+        async function marcarTemaCompletado(tema) {
+            if (progresoUsuario[tema.id]) {
+                mostrarMensaje('Este tema ya estaba completado', 'info', 'verificationStatus');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('accion', 'progreso');
+            formData.append('cedula', usuarioActual.cedula);
+            formData.append('temaId', tema.id);
+            formData.append('temaTitulo', tema.titulo);
+            formData.append('clase', temaSeleccionado?.clase?.titulo || '');
+            formData.append('semestre', temaSeleccionado?.semestre?.titulo || '');
+            formData.append('trayecto', temaSeleccionado?.trayecto?.titulo || '');
+
             try {
-                const res = await fetch(`${APPS_SCRIPT_URL}?accion=clases`);
-                const data = await res.json();
-                clasesConfig = data.clases || [];
-                return clasesConfig;
-            } catch(e) {
-                console.error(e);
-                return [];
+                const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    progresoUsuario[tema.id] = true;
+                    mostrarToast('¡Tema completado! Se ha guardado tu progreso.');
+                    const liTema = document.querySelector(`.tema-item[data-tema-id="${tema.id}"]`);
+                    if (liTema) {
+                        liTema.querySelector('i').className = 'fas fa-check-circle completado-badge';
+                        liTema.classList.add('completado');
+                    }
+                    document.getElementById('btnCompletarTema').style.display = 'none';
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                mostrarMensaje('Error al guardar progreso: ' + err.message, 'error', 'verificationStatus');
             }
         }
 
-        async function cargarProgreso() {
-            if (!usuario) return;
+        // ========== CARGAR ESTRUCTURA DESDE SHEETS ==========
+        async function cargarEstructuraYMostrar() {
             try {
-                const res = await fetch(`${APPS_SCRIPT_URL}?cedula=${usuario.cedula}&accion=progreso`);
-                const data = await res.json();
-                progreso = data.progreso || {};
-            } catch(e) { console.error(e); }
+                const response = await fetch(`${APPS_SCRIPT_URL}?accion=estructura`);
+                const data = await response.json();
+                if (data.estructura) {
+                    estructuraGlobal = JSON.parse(data.estructura);
+                } else {
+                    throw new Error('No se pudo cargar la estructura');
+                }
+                // Cargar fechas de clases
+                const fechasResp = await fetch(`${APPS_SCRIPT_URL}?accion=fechasClases`);
+                const fechasData = await fechasResp.json();
+                const fechasMap = {};
+                if (fechasData.fechas) {
+                    fechasData.fechas.forEach(f => { fechasMap[f.claseId] = f.fecha; });
+                }
+                // Filtrar clases según fecha
+                const hoy = new Date().toISOString().slice(0,10);
+                // Aplicar filtro en el árbol (modificar estructuraGlobal)
+                filtrarClasesPorFecha(estructuraGlobal, fechasMap, hoy);
+                construirArbol();
+                const primerTema = getPrimerTema();
+                if (primerTema) mostrarTema(primerTema.tema, primerTema.clase, primerTema.semestre, primerTema.trayecto);
+            } catch (error) {
+                console.error('Error cargando estructura:', error);
+                document.getElementById('arbolNavegacion').innerHTML = '<p class="mensaje-error">Error al cargar el contenido.</p>';
+            }
+        }
+
+        function filtrarClasesPorFecha(estructura, fechasMap, hoy) {
+            estructura.trayectos.forEach(trayecto => {
+                trayecto.semestres.forEach(semestre => {
+                    semestre.clases = semestre.clases.filter(clase => {
+                        const claseId = clase.id;
+                        const fechaHab = fechasMap[claseId];
+                        if (!fechaHab) return true; // si no tiene fecha, se muestra
+                        return fechaHab <= hoy;
+                    });
+                });
+            });
+        }
+
+        function getPrimerTema() {
+            if (!estructuraGlobal) return null;
+            const trayecto = estructuraGlobal.trayectos[0];
+            if (!trayecto) return null;
+            const semestre = trayecto.semestres[0];
+            if (!semestre) return null;
+            const clase = semestre.clases[0];
+            if (!clase) return null;
+            const tema = clase.temas[0];
+            if (!tema) return null;
+            return { tema, clase, semestre, trayecto };
         }
 
         function construirArbol() {
-            const container = document.getElementById('treeContainer');
-            if (!estructura) return;
-            container.innerHTML = '';
-            const trayecto = estructura.trayectos[0];
+            const contenedor = document.getElementById('arbolNavegacion');
+            contenedor.innerHTML = '';
+            const trayecto = estructuraGlobal.trayectos[0];
             const ul = document.createElement('ul');
             ul.className = 'tree';
-            trayecto.semestres.forEach(sem => {
+
+            trayecto.semestres.forEach(semestre => {
                 const liSem = document.createElement('li');
-                const details = document.createElement('details');
-                const summary = document.createElement('summary');
-                summary.innerHTML = `<i class="fas fa-calendar-alt"></i> ${sem.titulo}`;
-                details.appendChild(summary);
+                const detailsSem = document.createElement('details');
+                const summarySem = document.createElement('summary');
+                summarySem.innerHTML = `<i class="fas fa-calendar-alt"></i> ${semestre.titulo}`;
+                detailsSem.appendChild(summarySem);
                 const ulClases = document.createElement('ul');
-                sem.clases.forEach(clase => {
-                    const claseConfig = clasesConfig.find(c => c.id === clase.id);
-                    const hoy = new Date().toISOString().slice(0,10);
-                    let claseVisible = true;
-                    if (claseConfig && claseConfig.fechaInicio && claseConfig.fechaFin) {
-                        claseVisible = (hoy >= claseConfig.fechaInicio && hoy <= claseConfig.fechaFin);
-                    } else if (claseConfig && claseConfig.visible === false) {
-                        claseVisible = false;
-                    }
+                semestre.clases.forEach(clase => {
                     const liClase = document.createElement('li');
                     const detailsClase = document.createElement('details');
                     const summaryClase = document.createElement('summary');
-                    summaryClase.innerHTML = `<i class="fas fa-chalkboard"></i> ${clase.titulo} ${!claseVisible ? '🔒 (no disponible)' : ''}`;
+                    summaryClase.innerHTML = `<i class="fas fa-chalkboard"></i> ${clase.titulo}`;
                     detailsClase.appendChild(summaryClase);
                     const ulTemas = document.createElement('ul');
                     clase.temas.forEach(tema => {
                         const liTema = document.createElement('li');
                         liTema.className = 'tema-item';
-                        if (!claseVisible) liTema.classList.add('disabled');
                         liTema.setAttribute('data-tema-id', tema.id);
                         const icon = document.createElement('i');
-                        icon.className = progreso[tema.id] ? 'fas fa-check-circle completado-badge' : 'far fa-circle';
+                        icon.className = progresoUsuario[tema.id] ? 'fas fa-check-circle completado-badge' : 'far fa-circle';
                         const span = document.createElement('span');
                         span.textContent = tema.titulo;
                         liTema.appendChild(icon);
                         liTema.appendChild(span);
-                        if (claseVisible) {
-                            liTema.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                mostrarTema(tema, clase, sem, trayecto);
-                            });
-                        }
+                        liTema.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            mostrarTema(tema, clase, semestre, trayecto);
+                        });
                         ulTemas.appendChild(liTema);
                     });
                     detailsClase.appendChild(ulTemas);
                     liClase.appendChild(detailsClase);
                     ulClases.appendChild(liClase);
                 });
-                details.appendChild(ulClases);
-                liSem.appendChild(details);
+                detailsSem.appendChild(ulClases);
+                liSem.appendChild(detailsSem);
                 ul.appendChild(liSem);
             });
-            container.appendChild(ul);
+            contenedor.appendChild(ul);
         }
 
         function mostrarTema(tema, clase, semestre, trayecto) {
             temaSeleccionado = { tema, clase, semestre, trayecto };
-            const container = document.getElementById('topicContent');
+            const container = document.getElementById('contenidoTema');
             const contenido = tema.contenido;
             let html = `<h2>${tema.titulo}</h2>`;
             if (contenido.texto) html += `<p>${contenido.texto}</p>`;
             if (contenido.imagen) html += `<img src="${contenido.imagen}" style="max-width:100%; border-radius:1rem; margin:1rem 0;" onerror="this.style.display='none'">`;
-            if (contenido.audio) html += `<audio controls style="width:100%; margin:1rem 0;"><source src="${contenido.audio}" type="audio/mpeg"></audio>`;
-            if (contenido.video) html += `<iframe width="100%" height="315" src="${contenido.video}" frameborder="0" allowfullscreen></iframe>`;
+            if (contenido.audio) html += `<audio controls style="width:100%; margin:1rem 0;"><source src="${contenido.audio}" type="audio/mpeg">Tu navegador no soporta audio.</audio>`;
+            if (contenido.video) html += `<iframe width="100%" height="315" src="${contenido.video}" frameborder="0" allowfullscreen style="border-radius:1rem; margin:1rem 0;"></iframe>`;
             if (contenido.quiz) {
-                html += `<div><h3>📝 Cuestionario</h3><p>${contenido.quiz.pregunta}</p>`;
+                html += `<div class="quiz" data-quiz='${JSON.stringify(contenido.quiz)}'><h3>📝 Cuestionario</h3><p>${contenido.quiz.pregunta}</p>`;
                 contenido.quiz.opciones.forEach((opc, idx) => {
                     html += `<div><input type="radio" name="quiz" value="${idx}"> ${opc}</div>`;
                 });
                 html += `<button id="responderQuiz" class="btn-submit" style="margin-top:0.5rem;">Responder</button><div id="feedbackQuiz"></div></div>`;
             }
-            if (tema.consideraciones) html += `<h3>📌 Consideraciones</h3><ul>${tema.consideraciones.map(c=>`<li>${c}</li>`).join('')}</ul>`;
+            if (tema.consideraciones && tema.consideraciones.length > 0) {
+                html += `<h3>📌 Consideraciones</h3><ul>${tema.consideraciones.map(c => `<li>${c}</li>`).join('')}</ul>`;
+            }
             container.innerHTML = html;
-            const btn = document.getElementById('completeTopicBtn');
-            if (progreso[tema.id]) btn.style.display = 'none';
-            else btn.style.display = 'block';
-            btn.onclick = () => marcarCompletado(tema);
+
+            const btnCompletar = document.getElementById('btnCompletarTema');
+            if (progresoUsuario[tema.id]) {
+                btnCompletar.style.display = 'none';
+            } else {
+                btnCompletar.style.display = 'block';
+                btnCompletar.onclick = () => marcarTemaCompletado(tema);
+            }
+
             if (contenido.quiz) {
                 document.getElementById('responderQuiz')?.addEventListener('click', () => {
-                    const sel = document.querySelector('input[name="quiz"]:checked');
-                    if (!sel) return alert('Selecciona una respuesta');
-                    const resp = parseInt(sel.value);
-                    if (resp === contenido.quiz.correcta) {
-                        document.getElementById('feedbackQuiz').innerHTML = `<span style="color:green;">✅ ${contenido.quiz.feedback || 'Correcto!'}</span>`;
-                        if (!progreso[tema.id]) marcarCompletado(tema);
+                    const seleccion = document.querySelector('input[name="quiz"]:checked');
+                    if (!seleccion) { alert('Selecciona una respuesta'); return; }
+                    const respuesta = parseInt(seleccion.value);
+                    const quizData = contenido.quiz;
+                    if (respuesta === quizData.correcta) {
+                        document.getElementById('feedbackQuiz').innerHTML = `<span style="color:green;">✅ ${quizData.feedback || '¡Correcto!'}</span>`;
+                        if (!progresoUsuario[tema.id]) marcarTemaCompletado(tema);
                     } else {
-                        document.getElementById('feedbackQuiz').innerHTML = `<span style="color:red;">❌ Incorrecto. ${contenido.quiz.feedback || ''}</span>`;
+                        document.getElementById('feedbackQuiz').innerHTML = `<span style="color:red;">❌ Incorrecto. ${quizData.feedback || 'Inténtalo de nuevo.'}</span>`;
                     }
                 });
             }
         }
 
-        async function marcarCompletado(tema) {
-            if (progreso[tema.id]) return;
-            const fd = new FormData();
-            fd.append('accion', 'progreso');
-            fd.append('cedula', usuario.cedula);
-            fd.append('temaId', tema.id);
-            fd.append('temaTitulo', tema.titulo);
-            fd.append('clase', temaSeleccionado?.clase?.titulo || '');
-            fd.append('semestre', temaSeleccionado?.semestre?.titulo || '');
-            fd.append('trayecto', temaSeleccionado?.trayecto?.titulo || '');
-            try {
-                const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body:fd });
-                const data = await res.json();
-                if (data.result === 'success') {
-                    progreso[tema.id] = true;
-                    mostrarToast('Tema completado');
-                    const li = document.querySelector(`.tema-item[data-tema-id="${tema.id}"] i`);
-                    if (li) li.className = 'fas fa-check-circle completado-badge';
-                    document.getElementById('completeTopicBtn').style.display = 'none';
-                } else throw new Error(data.message);
-            } catch(e) { mostrarMensaje('loginStatus', 'Error al guardar progreso', 'error'); }
-        }
+        // ========== ADMIN PANEL (Tutor) ==========
+        let adminPanelOpen = false;
+        function initAdminPanel() {
+            const adminToggle = document.getElementById('adminToggleBtn');
+            const hiddenIcon = document.getElementById('hiddenAdminIcon');
+            const adminPanel = document.getElementById('adminPanel');
+            const closeAdmin = document.getElementById('closeAdminBtn');
 
-        // LOGIN
-        async function login(cedula, password) {
-            try {
-                const res = await fetch(`${APPS_SCRIPT_URL}?cedula=${encodeURIComponent(cedula)}&password=${encodeURIComponent(password)}`);
-                const data = await res.json();
-                if (data.exists) {
-                    usuario = data;
-                    localStorage.setItem('usuario', JSON.stringify(usuario));
-                    mostrarToast(`Bienvenido ${usuario.nombres || usuario.nombre}`);
-                    // Ocultar login y mostrar contenido
-                    document.getElementById('loginSection').classList.add('oculto');
-                    document.getElementById('registrationStudent').classList.add('oculto');
-                    document.getElementById('registrationTutor').classList.add('oculto');
-                    document.getElementById('mainContent').classList.remove('oculto');
-                    document.getElementById('attendancePanel').classList.add('oculto');
-                    document.getElementById('tutorPanel').classList.add('oculto');
-                    // Mostrar botón tutor si es tutor
-                    const tutorBtn = document.getElementById('tutorPanelBtn');
-                    if (usuario.tipo === 'tutor') tutorBtn.style.display = 'inline-flex';
-                    else tutorBtn.style.display = 'none';
-                    // Cargar datos
-                    await cargarEstructura();
-                    await cargarClasesConfig();
-                    await cargarProgreso();
-                    construirArbol();
-                    // Seleccionar primer tema
-                    if (estructura && estructura.trayectos[0]?.semestres[0]?.clases[0]?.temas[0]) {
-                        const primer = estructura.trayectos[0].semestres[0].clases[0].temas[0];
-                        mostrarTema(primer, estructura.trayectos[0].semestres[0].clases[0], estructura.trayectos[0].semestres[0], estructura.trayectos[0]);
+            function openAdmin() {
+                if (!tutorAuthenticated && usuarioActual.rol !== 'tutor') {
+                    const clave = prompt('Ingrese clave de tutor:');
+                    if (clave === 'admin123') {
+                        tutorAuthenticated = true;
+                        // Mostrar panel
+                        cargarDatosAdmin();
+                        adminPanel.classList.add('open');
+                    } else {
+                        alert('Clave incorrecta');
                     }
-                    // Actualizar drawer
-                    const drawerInfo = document.getElementById('drawerInfo');
-                    drawerInfo.innerHTML = `
-                        <p><i class="fas fa-id-card"></i> <strong>Cédula:</strong> ${usuario.cedula}</p>
-                        <p><i class="fas fa-user"></i> <strong>Nombre:</strong> ${usuario.nombres || usuario.nombre}</p>
-                        ${usuario.tipo === 'estudiante' ? `<p><i class="fas fa-envelope"></i> <strong>Correo:</strong> ${usuario.email || ''}</p>
-                        <p><i class="fas fa-university"></i> <strong>PNF:</strong> ${usuario.pnf || ''}</p>
-                        <p><i class="fas fa-route"></i> <strong>Trayecto:</strong> ${usuario.trayecto || ''}</p>
-                        <p><i class="fas fa-calendar-alt"></i> <strong>Semestre:</strong> ${usuario.semestre || ''}</p>` : ''}
-                    `;
                 } else {
-                    mostrarMensaje('loginStatus', 'Cédula o contraseña incorrecta', 'error');
+                    cargarDatosAdmin();
+                    adminPanel.classList.add('open');
                 }
-            } catch(e) {
-                mostrarMensaje('loginStatus', 'Error de conexión', 'error');
             }
-        }
 
-        // Registro estudiante
-        async function registrarEstudiante() {
-            const data = {
-                accion: 'registro_estudiante',
-                cedula: document.getElementById('regCedula').value.trim(),
-                nombres: document.getElementById('regNombres').value.trim(),
-                apellidos: document.getElementById('regApellidos').value.trim(),
-                email: document.getElementById('regEmail').value.trim(),
-                password: document.getElementById('regPassword').value.trim(),
-                nucleo: document.getElementById('regNucleo').value,
-                pnf: document.getElementById('regPnf').value,
-                trayecto: document.getElementById('regTrayecto').value,
-                semestre: document.getElementById('regSemestre').value
-            };
-            if (!data.cedula || !data.nombres || !data.apellidos || !data.email || !data.password) {
-                mostrarMensaje('loginStatus', 'Complete todos los campos', 'error');
-                return;
-            }
-            const fd = new FormData();
-            for (let k in data) fd.append(k, data[k]);
-            try {
-                const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body:fd });
-                const json = await res.json();
-                if (json.result === 'success') {
-                    mostrarToast('Registro exitoso. Ahora inicia sesión.');
-                    document.getElementById('registrationStudent').classList.add('oculto');
-                    document.getElementById('loginSection').classList.remove('oculto');
-                } else throw new Error(json.message);
-            } catch(e) {
-                mostrarMensaje('loginStatus', e.message, 'error');
-            }
-        }
+            if (adminToggle) adminToggle.addEventListener('click', openAdmin);
+            hiddenIcon.addEventListener('click', openAdmin);
+            closeAdmin.addEventListener('click', () => adminPanel.classList.remove('open'));
 
-        // Registro tutor (con clave maestra)
-        async function registrarTutor() {
-            const cedula = document.getElementById('tutorCedula').value.trim();
-            const nombre = document.getElementById('tutorNombre').value.trim();
-            const password = document.getElementById('tutorPassword').value.trim();
-            const master = document.getElementById('masterKey').value.trim();
-            if (!cedula || !nombre || !password || master !== 'admin123') {
-                mostrarMensaje('loginStatus', 'Datos inválidos o clave maestra incorrecta', 'error');
-                return;
-            }
-            const fd = new FormData();
-            fd.append('accion', 'registro_tutor');
-            fd.append('cedula', cedula);
-            fd.append('nombre', nombre);
-            fd.append('password', password);
-            try {
-                const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body:fd });
-                const json = await res.json();
-                if (json.result === 'success') {
-                    mostrarToast('Tutor registrado correctamente');
-                    document.getElementById('registrationTutor').classList.add('oculto');
-                    document.getElementById('loginSection').classList.remove('oculto');
-                } else throw new Error(json.message);
-            } catch(e) {
-                mostrarMensaje('loginStatus', e.message, 'error');
-            }
-        }
-
-        // Guardar estructura desde tutor
-        async function guardarEstructura() {
-            const json = document.getElementById('estructuraJson').value;
-            const fd = new FormData();
-            fd.append('accion', 'guardar_estructura');
-            fd.append('json', json);
-            try {
-                const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body:fd });
-                const data = await res.json();
-                if (data.result === 'success') {
-                    mostrarToast('Estructura actualizada');
-                    await cargarEstructura();
-                    construirArbol();
-                } else throw new Error(data.message);
-            } catch(e) { mostrarMensaje('loginStatus', 'Error al guardar', 'error'); }
-        }
-
-        // Guardar configuración de clases
-        async function guardarClases() {
-            const clases = [];
-            document.querySelectorAll('.clase-row').forEach(row => {
-                clases.push({
-                    id: row.dataset.id,
-                    fechaInicio: row.querySelector('.fecha-inicio').value,
-                    fechaFin: row.querySelector('.fecha-fin').value,
-                    visible: row.querySelector('.visible-check').checked
+            // Tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById(`tab${tab.dataset.tab.charAt(0).toUpperCase() + tab.dataset.tab.slice(1)}`).classList.add('active');
                 });
             });
-            const fd = new FormData();
-            fd.append('accion', 'guardar_clases');
-            fd.append('clases', JSON.stringify(clases));
-            try {
-                const res = await fetch(APPS_SCRIPT_URL, { method:'POST', body:fd });
-                const data = await res.json();
-                if (data.result === 'success') {
-                    mostrarToast('Configuración de clases guardada');
-                    await cargarClasesConfig();
-                    construirArbol();
-                } else throw new Error(data.message);
-            } catch(e) { mostrarMensaje('loginStatus', 'Error al guardar', 'error'); }
         }
 
-        // Cargar asistencia
-        async function cargarAsistencia() {
-            const fecha = document.getElementById('attendanceDate').value;
-            const claseId = document.getElementById('attendanceClass').value;
-            if (!fecha || !claseId) return;
-            const res = await fetch(`${APPS_SCRIPT_URL}?accion=asistencia&fecha=${fecha}&clase=${claseId}`);
-            const data = await res.json();
-            const asistencias = data.asistencias || {};
-            // Obtener lista de estudiantes
-            const estudiantes = []; // Podrías obtener de la hoja Usuarios
-            const listaDiv = document.getElementById('attendanceList');
-            listaDiv.innerHTML = '<table class="asistencia-table"><thead><tr><th>Cédula</th><th>Nombre</th><th>Presente</th></tr></thead><tbody></tbody></table>';
-            const tbody = listaDiv.querySelector('tbody');
-            // Simulación: obtener estudiantes desde la estructura o desde el sheet. Por ahora vacío.
-            // Idealmente deberías traer los estudiantes registrados.
-            // Para simplificar, mostramos un mensaje.
-            tbody.innerHTML = '<tr><td colspan="3">Cargando estudiantes...</td></tr>';
-            // Aquí se debe integrar la lista real de estudiantes (desde hoja Usuarios). Pendiente de implementación.
-        }
+        async function cargarDatosAdmin() {
+            // Cargar estructura actual en textarea
+            const resp = await fetch(`${APPS_SCRIPT_URL}?accion=estructura`);
+            const data = await resp.json();
+            document.getElementById('estructuraJson').value = JSON.stringify(JSON.parse(data.estructura), null, 2);
 
-        // Eventos
-        document.addEventListener('DOMContentLoaded', () => {
-            // Verificar sesión guardada
-            const saved = localStorage.getItem('usuario');
-            if (saved) {
-                usuario = JSON.parse(saved);
-                // Podrías revalidar con el servidor, pero por simplicidad asumimos válido.
-                // Forzar mostrar contenido.
-                document.getElementById('loginSection').classList.add('oculto');
-                document.getElementById('mainContent').classList.remove('oculto');
-                if (usuario.tipo === 'tutor') document.getElementById('tutorPanelBtn').style.display = 'inline-flex';
-                cargarEstructura().then(() => cargarClasesConfig()).then(() => cargarProgreso()).then(() => construirArbol());
+            // Cargar fechas de clases
+            const fechasResp = await fetch(`${APPS_SCRIPT_URL}?accion=fechasClases`);
+            const fechasData = await fechasResp.json();
+            const container = document.getElementById('clasesFechasContainer');
+            container.innerHTML = '';
+            // Obtener lista de clases desde estructuraGlobal (ya cargada)
+            if (estructuraGlobal) {
+                const clases = [];
+                estructuraGlobal.trayectos.forEach(t => {
+                    t.semestres.forEach(s => {
+                        s.clases.forEach(c => {
+                            clases.push({ id: c.id, titulo: c.titulo });
+                        });
+                    });
+                });
+                clases.forEach(clase => {
+                    const fechaExistente = fechasData.fechas.find(f => f.claseId === clase.id)?.fecha || '';
+                    const div = document.createElement('div');
+                    div.className = 'clase-item';
+                    div.innerHTML = `
+                        <strong>${clase.titulo}</strong><br>
+                        <label>Fecha de habilitación (YYYY-MM-DD): <input type="date" class="clase-fecha" data-id="${clase.id}" value="${fechaExistente}"></label>
+                    `;
+                    container.appendChild(div);
+                });
             }
 
-            document.getElementById('loginBtn').onclick = () => {
-                const cedula = document.getElementById('cedulaInput').value.trim();
-                const pass = document.getElementById('passwordInput').value.trim();
-                if (!cedula || !pass) return mostrarMensaje('loginStatus', 'Ingrese cédula y contraseña', 'error');
-                login(cedula, pass);
-            };
-            document.getElementById('registerNewBtn').onclick = () => {
-                document.getElementById('loginSection').classList.add('oculto');
-                document.getElementById('registrationStudent').classList.remove('oculto');
-            };
-            document.getElementById('backToLogin').onclick = () => {
-                document.getElementById('registrationStudent').classList.add('oculto');
-                document.getElementById('loginSection').classList.remove('oculto');
-            };
-            document.getElementById('backToLoginFromTutor').onclick = () => {
-                document.getElementById('registrationTutor').classList.add('oculto');
-                document.getElementById('loginSection').classList.remove('oculto');
-            };
-            document.getElementById('submitStudentReg').onclick = registrarEstudiante;
-            document.getElementById('submitTutorReg').onclick = registrarTutor;
+            // Cargar lista de estudiantes para asistencia
+            const estudiantesResp = await fetch(`${APPS_SCRIPT_URL}?accion=estudiantes`);
+            const estudiantesData = await estudiantesResp.json();
+            window.estudiantesList = estudiantesData.estudiantes || [];
+        }
 
-            // Drawer
+        async function guardarEstructura() {
+            const nuevoJson = document.getElementById('estructuraJson').value;
+            try {
+                JSON.parse(nuevoJson); // validar
+                const formData = new FormData();
+                formData.append('accion', 'actualizarEstructura');
+                formData.append('estructura', nuevoJson);
+                const resp = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await resp.json();
+                if (data.result === 'success') {
+                    mostrarToast('Estructura actualizada');
+                    // Recargar estructura
+                    cargarEstructuraYMostrar();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (e) {
+                mostrarMensaje('JSON inválido: ' + e.message, 'error', 'verificationStatus');
+            }
+        }
+
+        async function guardarFechas() {
+            const fechas = [];
+            document.querySelectorAll('.clase-fecha').forEach(input => {
+                fechas.push({ claseId: input.dataset.id, fecha: input.value });
+            });
+            const formData = new FormData();
+            formData.append('accion', 'guardarFechas');
+            formData.append('fechas', JSON.stringify(fechas));
+            const resp = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+            const data = await resp.json();
+            if (data.result === 'success') {
+                mostrarToast('Fechas guardadas');
+                cargarEstructuraYMostrar(); // refrescar árbol
+            } else {
+                mostrarMensaje('Error: ' + data.message, 'error', 'verificationStatus');
+            }
+        }
+
+        async function cargarAsistencia() {
+            const fecha = document.getElementById('asistenciaFecha').value;
+            if (!fecha) {
+                alert('Selecciona una fecha');
+                return;
+            }
+            const resp = await fetch(`${APPS_SCRIPT_URL}?accion=asistencia&fecha=${fecha}`);
+            const data = await resp.json();
+            const asistencias = data.asistencias || [];
+            const estudiantes = window.estudiantesList || [];
+            const container = document.getElementById('asistenciaLista');
+            container.innerHTML = '';
+            estudiantes.forEach(est => {
+                const asistencia = asistencias.find(a => a.cedula === est.cedula);
+                const estado = asistencia ? asistencia.estado : 'presente';
+                const div = document.createElement('div');
+                div.className = 'attendance-item';
+                div.innerHTML = `
+                    <span>${est.nombres} ${est.apellidos}</span>
+                    <select class="attendance-select" data-cedula="${est.cedula}">
+                        <option value="presente" ${estado === 'presente' ? 'selected' : ''}>Presente</option>
+                        <option value="ausente" ${estado === 'ausente' ? 'selected' : ''}>Ausente</option>
+                    </select>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        async function guardarAsistencia() {
+            const fecha = document.getElementById('asistenciaFecha').value;
+            if (!fecha) {
+                alert('Selecciona una fecha');
+                return;
+            }
+            const asistencias = [];
+            document.querySelectorAll('.attendance-select').forEach(select => {
+                asistencias.push({
+                    cedula: select.dataset.cedula,
+                    estado: select.value
+                });
+            });
+            const formData = new FormData();
+            formData.append('accion', 'guardarAsistencia');
+            formData.append('fecha', fecha);
+            formData.append('asistencias', JSON.stringify(asistencias));
+            const resp = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+            const data = await resp.json();
+            if (data.result === 'success') {
+                mostrarToast('Asistencia guardada');
+            } else {
+                mostrarMensaje('Error: ' + data.message, 'error', 'verificationStatus');
+            }
+        }
+
+        // ========== CARGAR PROGRESO ==========
+        async function cargarProgresoUsuario(cedula) {
+            try {
+                const res = await fetch(`${APPS_SCRIPT_URL}?cedula=${cedula}&accion=progreso`);
+                const data = await res.json();
+                if (data.progreso) {
+                    progresoUsuario = data.progreso;
+                }
+            } catch (err) {
+                console.warn("No se pudo cargar progreso", err);
+            }
+        }
+
+        // ========== MODO OSCURO ==========
+        function initDarkMode() {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) document.body.classList.add('dark-mode');
+            const btn = document.getElementById('darkModeToggle');
+            btn.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+                btn.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i> Modo claro' : '<i class="fas fa-moon"></i> Modo oscuro';
+            });
+            btn.innerHTML = darkMode ? '<i class="fas fa-sun"></i> Modo claro' : '<i class="fas fa-moon"></i> Modo oscuro';
+        }
+
+        // ========== DRAWER ==========
+        function initDrawer() {
             const profileBtn = document.getElementById('profileBtn');
             const drawer = document.getElementById('profileDrawer');
             const overlay = document.getElementById('drawerOverlay');
-            const closeDrawer = document.getElementById('closeDrawerBtn');
-            profileBtn.onclick = () => { drawer.classList.add('open'); overlay.classList.add('open'); };
-            closeDrawer.onclick = () => { drawer.classList.remove('open'); overlay.classList.remove('open'); };
-            overlay.onclick = () => { drawer.classList.remove('open'); overlay.classList.remove('open'); };
+            const closeBtn = document.getElementById('closeDrawerBtn');
 
-            // Modo oscuro
-            const darkBtn = document.getElementById('darkModeToggle');
-            const isDark = localStorage.getItem('darkMode') === 'true';
-            if (isDark) document.body.classList.add('dark-mode');
-            darkBtn.onclick = () => {
-                document.body.classList.toggle('dark-mode');
-                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-                darkBtn.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i> Modo claro' : '<i class="fas fa-moon"></i> Modo oscuro';
-            };
+            function openDrawer() {
+                drawer.classList.add('open');
+                overlay.classList.add('open');
+            }
+            function closeDrawer() {
+                drawer.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+            profileBtn.addEventListener('click', openDrawer);
+            closeBtn.addEventListener('click', closeDrawer);
+            overlay.addEventListener('click', closeDrawer);
+        }
 
-            // Asistencia
-            document.getElementById('attendanceBtn').onclick = async () => {
-                document.getElementById('mainContent').classList.add('oculto');
-                document.getElementById('attendancePanel').classList.remove('oculto');
-                document.getElementById('tutorPanel').classList.add('oculto');
-                // Cargar lista de clases para el select
-                const select = document.getElementById('attendanceClass');
-                select.innerHTML = '';
-                if (estructura && estructura.trayectos) {
-                    estructura.trayectos[0].semestres.forEach(sem => {
-                        sem.clases.forEach(cl => {
-                            const opt = document.createElement('option');
-                            opt.value = cl.id;
-                            opt.textContent = cl.titulo;
-                            select.appendChild(opt);
-                        });
-                    });
-                }
-                document.getElementById('attendanceDate').value = new Date().toISOString().slice(0,10);
-                cargarAsistencia();
-            };
-            document.getElementById('attendanceDate').addEventListener('change', cargarAsistencia);
-            document.getElementById('attendanceClass').addEventListener('change', cargarAsistencia);
+        // ========== EVENTOS ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            initDarkMode();
+            initDrawer();
+            initAdminPanel();
 
-            // Tutor panel
-            document.getElementById('tutorPanelBtn').onclick = async () => {
-                if (usuario.tipo !== 'tutor') return;
-                document.getElementById('mainContent').classList.add('oculto');
-                document.getElementById('attendancePanel').classList.add('oculto');
-                document.getElementById('tutorPanel').classList.remove('oculto');
-                // Cargar JSON actual
-                const est = await cargarEstructura();
-                document.getElementById('estructuraJson').value = JSON.stringify(est, null, 2);
-                // Cargar config clases
-                await cargarClasesConfig();
-                const container = document.getElementById('clasesConfigContainer');
-                container.innerHTML = '';
-                if (estructura && estructura.trayectos) {
-                    estructura.trayectos[0].semestres.forEach(sem => {
-                        sem.clases.forEach(cl => {
-                            const cfg = clasesConfig.find(c => c.id === cl.id) || { fechaInicio: '', fechaFin: '', visible: true };
-                            const row = document.createElement('div');
-                            row.className = 'clase-row';
-                            row.dataset.id = cl.id;
-                            row.innerHTML = `
-                                <strong>${cl.titulo}</strong><br>
-                                <label>Fecha inicio:</label> <input type="date" class="fecha-inicio" value="${cfg.fechaInicio || ''}">
-                                <label>Fecha fin:</label> <input type="date" class="fecha-fin" value="${cfg.fechaFin || ''}">
-                                <label><input type="checkbox" class="visible-check" ${cfg.visible !== false ? 'checked' : ''}> Visible</label>
-                                <hr>
-                            `;
-                            container.appendChild(row);
-                        });
-                    });
-                }
-            };
-            document.getElementById('saveEstructuraBtn').onclick = guardarEstructura;
-            document.getElementById('saveClasesBtn').onclick = guardarClases;
-            document.getElementById('saveAttendanceBtn').onclick = async () => {
-                // Guardar asistencias (implementar)
-                mostrarToast('Asistencia guardada (demo)');
-            };
+            const cedulaInput = document.getElementById('cedulaInput');
+            cedulaInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                autoVerifyCedula(e.target.value);
+            });
+
+            document.getElementById('registerDirectBtn').addEventListener('click', () => {
+                document.getElementById('verificationSection').classList.add('hidden');
+                document.getElementById('registrationSection').classList.remove('oculto');
+            });
+
+            document.getElementById('loginBtn').addEventListener('click', loginWithPassword);
+            document.getElementById('registerUserBtn').addEventListener('click', registrarUsuario);
+
+            // Botones admin
+            document.getElementById('guardarEstructuraBtn').addEventListener('click', guardarEstructura);
+            document.getElementById('guardarFechasBtn').addEventListener('click', guardarFechas);
+            document.getElementById('cargarAsistenciaBtn').addEventListener('click', cargarAsistencia);
+            document.getElementById('guardarAsistenciaBtn').addEventListener('click', guardarAsistencia);
+
+            // Ocultar botón de asistencia si no es tutor (se mostrará solo en el panel de admin)
+            document.getElementById('attendanceBtn').style.display = 'none'; // no lo usamos, lo hacemos desde admin
         });
     </script>
 </body>
