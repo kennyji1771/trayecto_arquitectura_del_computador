@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== ESTILOS (mantener igual que antes, con adiciones para modales y asistencia) ========== */
+        /* Mantener todos los estilos anteriores y añadir los necesarios para modales y nuevas secciones */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -120,10 +120,6 @@
             background: #3b82f6;
             color: white;
             border-color: #3b82f6;
-        }
-        /* Botón admin oculto */
-        .nav button#adminBtn {
-            display: none;
         }
         .scroll-top {
             position: fixed;
@@ -332,7 +328,6 @@
             font-size: 0.9rem;
             margin-top: 2rem;
         }
-        /* Animaciones */
         .pulse-dots {
             display: flex;
             gap: 10px;
@@ -383,8 +378,6 @@
             from { top: -80px; opacity: 0; }
             to { top: 30px; opacity: 1; }
         }
-
-        /* Drawer (perfil) */
         .drawer {
             position: fixed;
             top: 0;
@@ -438,8 +431,7 @@
             align-self: flex-end;
             color: inherit;
         }
-
-        /* Modales */
+        /* Modales para Admin y Asistencia */
         .modal {
             display: none;
             position: fixed;
@@ -447,20 +439,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             z-index: 300;
             justify-content: center;
             align-items: center;
         }
-        .modal.open {
+        .modal.active {
             display: flex;
         }
         .modal-content {
             background: white;
             border-radius: 2rem;
-            max-width: 800px;
-            width: 90%;
-            max-height: 80vh;
+            max-width: 90%;
+            width: 800px;
+            max-height: 90%;
             overflow-y: auto;
             padding: 2rem;
             position: relative;
@@ -469,43 +461,34 @@
             background: #1e293b;
             color: #e2e8f0;
         }
-        .modal-content h3 {
-            margin-bottom: 1rem;
-        }
-        .modal-content .close-modal {
+        .modal-close {
             position: absolute;
             top: 1rem;
             right: 1.5rem;
             font-size: 1.8rem;
             cursor: pointer;
-            color: #aaa;
         }
-        .modal-content .close-modal:hover {
-            color: #333;
+        .admin-panel textarea {
+            width: 100%;
+            font-family: monospace;
+            min-height: 400px;
         }
-
-        /* Asistencia */
-        .asistencia-list {
-            margin-top: 1rem;
+        .class-config-item {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 1rem;
         }
-        .asistencia-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.5rem;
-            border-bottom: 1px solid #ddd;
-        }
-        .asistencia-item label {
-            flex: 1;
-        }
-
-        /* Responsive */
         @media (max-width: 800px) {
             .main-layout {
                 flex-direction: column;
             }
             .sidebar {
                 width: 100%;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
             }
         }
     </style>
@@ -521,17 +504,18 @@
             </div>
             <nav class="nav">
                 <button id="profileBtn"><i class="fas fa-user-circle"></i> Mi perfil</button>
-                <button id="asistenciaBtn" class="hidden" style="display: none;"><i class="fas fa-calendar-check"></i> Asistencia</button>
-                <button id="adminBtn" style="display: none;"><i class="fas fa-chalkboard-user"></i> Tutor</button>
+                <button id="attendanceBtn"><i class="fas fa-check-circle"></i> Asistencia</button>
+                <button id="adminBtn"><i class="fas fa-user-cog"></i> Admin</button>
                 <button id="darkModeToggle"><i class="fas fa-moon"></i> Modo oscuro</button>
                 <a href="#inicio"><i class="fas fa-rocket"></i> Inicio</a>
                 <a href="#clase"><i class="fas fa-book-open"></i> Clase</a>
+                <a href="#acerca"><i class="fas fa-info-circle"></i> Acerca</a>
             </nav>
         </header>
 
         <!-- SECCIÓN DE VERIFICACIÓN DE CÉDULA -->
         <section id="verificationSection" class="intro-block">
-            <h2><i class="fas fa-shield-alt"></i> Acceso a la Materia</h2>
+            <h2><i class="fas fa-shield-alt"></i> Acceso al Aula Virtual</h2>
             <p style="font-size:1.2rem; margin-bottom:1.5rem;">Ingresa tu cédula para comenzar. Si es tu primera vez, completa tus datos.</p>
             <div class="badge-row">
                 <span class="badge-item"><i class="fas fa-id-card"></i> Cédula</span>
@@ -542,18 +526,12 @@
                     <input type="text" id="cedulaInput" placeholder="V-12345678" style="text-align: center;">
                     <i class="fas auto-verify-indicator" id="verifyIndicator"></i>
                 </div>
-                <div id="passwordContainer" style="display:none; width:100%; max-width:300px;">
-                    <input type="password" id="passwordInput" placeholder="Contraseña" style="text-align: center;">
-                </div>
                 <div id="verificationAnimation" class="pulse-dots hidden">
                     <span></span><span></span><span></span>
                 </div>
                 <div id="verificationStatus" class="mensaje-info" style="display:none;"></div>
                 <button type="button" id="registerDirectBtn" class="btn-submit" style="display:none; width: auto; padding: 0.8rem 2rem;">
                     <i class="fas fa-user-plus"></i> Registrar nuevo usuario
-                </button>
-                <button type="button" id="loginBtn" class="btn-submit" style="display:none; width: auto; padding: 0.8rem 2rem;">
-                    <i class="fas fa-sign-in-alt"></i> Ingresar
                 </button>
             </div>
         </section>
@@ -574,11 +552,6 @@
                     <div class="field"><label>Trayecto *</label><select id="trayecto"><option value="Arquitectura del Computador">Arquitectura del Computador</option></select></div>
                     <div class="field"><label>Semestre *</label><select id="semestre"><option value="I">I</option><option value="II">II</option></select></div>
                 </div>
-                <div class="grid-2">
-                    <div class="field"><label>Correo Electrónico *</label><input type="email" id="email"></div>
-                    <div class="field"><label>Contraseña *</label><input type="password" id="passwordReg"></div>
-                </div>
-                <div class="field"><label>Confirmar Contraseña *</label><input type="password" id="confirmPassword"></div>
                 <button id="registerUserBtn" class="btn-submit">Guardar y acceder</button>
             </section>
         </div>
@@ -597,10 +570,10 @@
             </div>
         </div>
 
-        <div class="footer-note">⚡ Educación Especializada · Gerard Kenny José Sieveres B. · SGO</div>
+        <div class="footer-note">⚡ Aprendizaje Progresivo Tangible · Gerard Kenny José Sieveres B.</div>
     </div>
 
-    <!-- Drawer (perfil) -->
+    <!-- Panel deslizable (drawer) -->
     <div class="drawer-overlay" id="drawerOverlay"></div>
     <div class="drawer" id="profileDrawer">
         <button class="close-drawer" id="closeDrawerBtn">&times;</button>
@@ -608,80 +581,95 @@
         <div class="user-info" id="drawerUserInfo">
             <p><i class="fas fa-id-card"></i> <strong>Cédula:</strong> <span id="drawerCedula">-</span></p>
             <p><i class="fas fa-user"></i> <strong>Nombre:</strong> <span id="drawerNombre">-</span></p>
-            <p><i class="fas fa-envelope"></i> <strong>Correo:</strong> <span id="drawerEmail">-</span></p>
             <p><i class="fas fa-university"></i> <strong>PNF:</strong> <span id="drawerPnf">-</span></p>
             <p><i class="fas fa-route"></i> <strong>Trayecto:</strong> <span id="drawerTrayecto">-</span></p>
             <p><i class="fas fa-calendar-alt"></i> <strong>Semestre:</strong> <span id="drawerSemestre">-</span></p>
         </div>
     </div>
 
-    <!-- Modal Asistencia -->
-    <div id="asistenciaModal" class="modal">
+    <!-- Modal de Asistencia -->
+    <div id="attendanceModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" id="closeAsistenciaModal">&times;</span>
-            <h3><i class="fas fa-calendar-check"></i> Registrar Asistencia</h3>
+            <span class="modal-close" id="closeAttendanceModal">&times;</span>
+            <h2><i class="fas fa-check-circle"></i> Tomar Asistencia</h2>
             <div class="field">
-                <label>Fecha de clase</label>
-                <input type="date" id="fechaAsistencia" required>
+                <label>Fecha</label>
+                <input type="date" id="attendanceDate" value="">
             </div>
-            <div id="listaEstudiantes" class="asistencia-list">
-                <!-- Lista dinámica de estudiantes con checkboxes -->
+            <div class="field">
+                <label>Clase</label>
+                <select id="attendanceClassId"></select>
             </div>
-            <button id="guardarAsistenciaBtn" class="btn-submit" style="margin-top:1rem;">Guardar Asistencia</button>
+            <div class="field">
+                <label>Estado</label>
+                <select id="attendanceStatus">
+                    <option value="Sí">Presente</option>
+                    <option value="No">Ausente</option>
+                </select>
+            </div>
+            <button id="saveAttendanceBtn" class="btn-submit">Guardar Asistencia</button>
+            <div id="attendanceMessage" class="mensaje-info" style="display:none;"></div>
         </div>
     </div>
 
-    <!-- Modal Tutor (Admin) -->
+    <!-- Modal de Administración -->
     <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" id="closeAdminModal">&times;</span>
-            <h3><i class="fas fa-chalkboard-user"></i> Panel del Tutor</h3>
-            <div id="tutorAuthPanel">
-                <p>Ingresa la clave maestra para registrar un nuevo tutor:</p>
-                <input type="password" id="masterPassword" placeholder="Clave maestra">
-                <button id="verifyMasterBtn" class="btn-submit" style="margin-top:0.5rem;">Verificar</button>
-                <div id="tutorRegisterForm" style="display:none; margin-top:1rem;">
-                    <h4>Registrar nuevo tutor</h4>
-                    <div class="field"><label>Cédula</label><input type="text" id="tutorCedula"></div>
-                    <div class="field"><label>Nombre completo</label><input type="text" id="tutorNombre"></div>
-                    <div class="field"><label>Contraseña</label><input type="password" id="tutorPassword"></div>
-                    <button id="registrarTutorBtn" class="btn-submit">Registrar Tutor</button>
+        <div class="modal-content" style="max-width: 90%; width: 1000px;">
+            <span class="modal-close" id="closeAdminModal">&times;</span>
+            <h2><i class="fas fa-user-cog"></i> Panel de Administración</h2>
+            <div>
+                <h3>Contraseña de administrador</h3>
+                <input type="password" id="adminPassword" placeholder="Contraseña">
+                <button id="loginAdminBtn">Acceder</button>
+                <div id="adminPanel" style="display:none; margin-top: 2rem;">
+                    <h3>Editar estructura de curso (JSON)</h3>
+                    <textarea id="estructuraEditor" rows="20" style="width:100%; font-family:monospace;"></textarea>
+                    <button id="saveEstructuraBtn" class="btn-submit" style="margin-top:0.5rem;">Guardar estructura</button>
+
+                    <h3>Gestión de fechas de clases</h3>
+                    <div id="classConfigContainer"></div>
+                    <button id="saveClassConfigBtn" class="btn-submit">Guardar configuración de clases</button>
+
+                    <h3>Ver asistencia</h3>
+                    <div>
+                        <label>Filtrar por fecha</label>
+                        <input type="date" id="adminAttendanceDate">
+                        <label>Filtrar por clase</label>
+                        <select id="adminAttendanceClass"></select>
+                        <button id="loadAttendanceAdminBtn">Cargar asistencias</button>
+                        <div id="adminAttendanceList" style="margin-top:1rem;"></div>
+                    </div>
                 </div>
             </div>
-            <hr>
-            <div id="estructuraEditorPanel" style="margin-top:1rem;">
-                <h4>Editor de Estructura del Curso</h4>
-                <textarea id="estructuraJsonEditor" rows="15" style="width:100%; font-family:monospace;"></textarea>
-                <button id="guardarEstructuraBtn" class="btn-submit" style="margin-top:0.5rem;">Guardar Cambios</button>
-                <p class="mensaje-info" id="editorMsg"></p>
-            </div>
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- Toast de éxito -->
     <div id="toast" class="toast-success" style="display: none;"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
 
     <script>
-        // ========== CONFIGURACIÓN ==========
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz608ZSoPf4SRKGvQYasRKWeVgFWXsoPanRmpu-46LzyJZ7oPUsjbIBn_iJevGtT19AAQ/exec";
+        // CONFIGURACIÓN - URL DE APPS SCRIPT (PROPORCIONADA)
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby_ZbCVN8NLgRhIr68Cax57pJAFOX04_XGtKE7gSU7kfhyPO7EgAxV3Mf1qFBCIW75bZA/exec";
 
-        let usuarioActual = { cedula: '', nombres: '', apellidos: '', nucleo: '', pnf: '', trayecto: '', semestre: '', email: '' };
+        let usuarioActual = { cedula: '', nombres: '', apellidos: '', nucleo: '', pnf: '', trayecto: '', semestre: '' };
         let estructuraGlobal = null;
-        let progresoUsuario = {};
+        let progresoUsuario = {};  // temaId -> true/false
         let temaSeleccionado = null;
         let verificationTimeout = null;
-        let isTutor = false;   // indica si el usuario autenticado es tutor
+        let configClases = {}; // almacena visibilidad/fechas
+        let adminLoggedIn = false;
 
-        // ========== UI ==========
-        function mostrarToast(mensaje) {
+        // ========== FUNCIONES DE UI ==========
+        function mostrarToast(mensaje, tipo = 'exito') {
             const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = mensaje;
+            const msgSpan = document.getElementById('toastMsg');
+            msgSpan.innerText = mensaje;
             toast.style.display = 'flex';
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
-        function mostrarMensaje(texto, tipo) {
-            const div = document.getElementById('verificationStatus');
+        function mostrarMensaje(texto, tipo, elementoId = 'verificationStatus') {
+            const div = document.getElementById(elementoId);
             if (!div) return;
             div.style.display = 'block';
             div.className = `mensaje-${tipo}`;
@@ -692,29 +680,21 @@
         function actualizarDrawer() {
             document.getElementById('drawerCedula').innerText = usuarioActual.cedula || '-';
             document.getElementById('drawerNombre').innerText = `${usuarioActual.nombres || ''} ${usuarioActual.apellidos || ''}`.trim() || '-';
-            document.getElementById('drawerEmail').innerText = usuarioActual.email || '-';
             document.getElementById('drawerPnf').innerText = usuarioActual.pnf || '-';
             document.getElementById('drawerTrayecto').innerText = usuarioActual.trayecto || '-';
             document.getElementById('drawerSemestre').innerText = usuarioActual.semestre || '-';
         }
 
-        // ========== VERIFICACIÓN DE CÉDULA (con contraseña) ==========
-        let currentCedula = '';
-        async function autoVerifyCedula(cedula) {
-            currentCedula = cedula;
+        // ========== VERIFICACIÓN DE CÉDULA EN TIEMPO REAL ==========
+        function autoVerifyCedula(cedula) {
             const indicator = document.getElementById('verifyIndicator');
             const statusDiv = document.getElementById('verificationStatus');
             const registerBtn = document.getElementById('registerDirectBtn');
-            const loginBtn = document.getElementById('loginBtn');
-            const passwordContainer = document.getElementById('passwordContainer');
-            const passwordInput = document.getElementById('passwordInput');
             const animDiv = document.getElementById('verificationAnimation');
 
             clearTimeout(verificationTimeout);
             if (statusDiv) statusDiv.style.display = 'none';
-            registerBtn.style.display = 'none';
-            loginBtn.style.display = 'none';
-            passwordContainer.style.display = 'none';
+            if (registerBtn) registerBtn.style.display = 'none';
             indicator.innerHTML = '';
             indicator.classList.remove('visible', 'verifying', 'verified', 'error');
             if (animDiv) animDiv.classList.add('hidden');
@@ -726,21 +706,16 @@
             if (animDiv) animDiv.classList.remove('hidden');
 
             verificationTimeout = setTimeout(() => {
-                fetch(`${APPS_SCRIPT_URL}?cedula=${encodeURIComponent(cedula)}&accion=verificarExistencia`)
+                fetch(`${APPS_SCRIPT_URL}?cedula=${encodeURIComponent(cedula)}`)
                     .then(res => res.json())
                     .then(data => {
                         if (animDiv) animDiv.classList.add('hidden');
                         indicator.classList.remove('verifying');
                         if (data.exists) {
-                            // Usuario existe, pedir contraseña
-                            statusDiv.className = 'mensaje-info';
-                            statusDiv.innerHTML = '<i class="fas fa-info-circle"></i> Usuario encontrado. Ingresa tu contraseña.';
+                            statusDiv.className = 'mensaje-exito';
+                            statusDiv.innerHTML = `<i class="fas fa-check-circle"></i> Bienvenido ${data.nombres} ${data.apellidos}`;
                             statusDiv.style.display = 'block';
                             indicator.classList.add('verified');
-                            passwordContainer.style.display = 'block';
-                            loginBtn.style.display = 'inline-block';
-                            registerBtn.style.display = 'none';
-                            // Guardar datos básicos temporalmente
                             usuarioActual = {
                                 cedula: data.cedula,
                                 nombres: data.nombres,
@@ -748,10 +723,16 @@
                                 nucleo: data.nucleo,
                                 pnf: data.pnf,
                                 trayecto: data.trayecto,
-                                semestre: data.semestre,
-                                email: data.email
+                                semestre: data.semestre
                             };
                             actualizarDrawer();
+                            cargarProgresoUsuario(cedula).then(() => {
+                                setTimeout(() => {
+                                    document.getElementById('verificationSection').classList.add('hidden');
+                                    document.getElementById('contenidoPrincipal').classList.remove('oculto');
+                                    cargarEstructuraYMostrar();
+                                }, 1200);
+                            });
                         } else {
                             statusDiv.className = 'mensaje-info';
                             statusDiv.innerHTML = '<i class="fas fa-info-circle"></i> Usuario no registrado. Completa el registro.';
@@ -765,51 +746,26 @@
                         if (animDiv) animDiv.classList.add('hidden');
                         indicator.classList.remove('verifying');
                         statusDiv.className = 'mensaje-error';
-                        statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> Error de conexión.';
+                        statusDiv.innerHTML = '<i class="fas fa-times-circle"></i> Error de conexión con el servidor.';
                         statusDiv.style.display = 'block';
                         indicator.classList.add('error');
                     });
             }, 700);
         }
 
-        async function verificarPassword() {
-            const password = document.getElementById('passwordInput').value;
-            if (!password) {
-                mostrarMensaje('Ingresa tu contraseña', 'error');
-                return;
-            }
-            mostrarMensaje('Verificando contraseña...', 'info');
+        async function cargarProgresoUsuario(cedula) {
             try {
-                const response = await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    body: new URLSearchParams({
-                        accion: 'verificarPassword',
-                        cedula: currentCedula,
-                        password: password
-                    })
-                });
-                const data = await response.json();
-                if (data.valid) {
-                    // También verificar si es tutor
-                    isTutor = data.isTutor || false;
-                    mostrarToast('Bienvenido/a');
-                    // Cargar progreso y contenido
-                    await cargarProgresoUsuario(currentCedula);
-                    document.getElementById('verificationSection').classList.add('hidden');
-                    document.getElementById('contenidoPrincipal').classList.remove('oculto');
-                    // Mostrar botones según rol
-                    document.getElementById('asistenciaBtn').style.display = 'inline-block';
-                    if (isTutor) document.getElementById('adminBtn').style.display = 'inline-block';
-                    cargarEstructuraYMostrar();
-                } else {
-                    mostrarMensaje('Contraseña incorrecta', 'error');
+                const res = await fetch(`${APPS_SCRIPT_URL}?cedula=${cedula}&accion=progreso`);
+                const data = await res.json();
+                if (data.progreso) {
+                    progresoUsuario = data.progreso;
                 }
             } catch (err) {
-                mostrarMensaje('Error al verificar contraseña', 'error');
+                console.warn("No se pudo cargar progreso", err);
             }
         }
 
-        // ========== REGISTRO DE ESTUDIANTE ==========
+        // ========== REGISTRO DE NUEVO USUARIO ==========
         async function registrarUsuario() {
             const cedula = document.getElementById('cedulaInput').value.trim();
             const nombres = document.getElementById('nombres').value.trim();
@@ -818,17 +774,10 @@
             const pnf = document.getElementById('pnf').value;
             const trayecto = document.getElementById('trayecto').value;
             const semestre = document.getElementById('semestre').value;
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('passwordReg').value;
-            const confirm = document.getElementById('confirmPassword').value;
 
-            if (!cedula || !nombres || !apellidos || !nucleo || !pnf || !trayecto || !semestre || !email || !password) {
+            if (!cedula || !nombres || !apellidos || !nucleo || !pnf || !trayecto || !semestre) {
                 mostrarMensaje('Por favor completa todos los campos', 'error');
-                return;
-            }
-            if (password !== confirm) {
-                mostrarMensaje('Las contraseñas no coinciden', 'error');
-                return;
+                return false;
             }
 
             const formData = new FormData();
@@ -840,40 +789,34 @@
             formData.append('pnf', pnf);
             formData.append('trayecto', trayecto);
             formData.append('semestre', semestre);
-            formData.append('email', email);
-            formData.append('password', password);
 
             try {
                 const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
                 const data = await response.json();
                 if (data.result === 'success') {
-                    usuarioActual = { cedula, nombres, apellidos, nucleo, pnf, trayecto, semestre, email };
+                    usuarioActual = { cedula, nombres, apellidos, nucleo, pnf, trayecto, semestre };
                     actualizarDrawer();
                     mostrarToast('Registro exitoso. Cargando contenido...');
                     progresoUsuario = {};
                     document.getElementById('registrationSection').classList.add('oculto');
                     document.getElementById('contenidoPrincipal').classList.remove('oculto');
-                    document.getElementById('asistenciaBtn').style.display = 'inline-block';
                     cargarEstructuraYMostrar();
+                    return true;
                 } else {
                     throw new Error(data.message);
                 }
             } catch (err) {
                 mostrarMensaje('Error al registrar: ' + err.message, 'error');
+                return false;
             }
         }
 
-        // ========== PROGRESO ==========
-        async function cargarProgresoUsuario(cedula) {
-            try {
-                const res = await fetch(`${APPS_SCRIPT_URL}?cedula=${cedula}&accion=progreso`);
-                const data = await res.json();
-                if (data.progreso) progresoUsuario = data.progreso;
-            } catch (err) { console.warn(err); }
-        }
-
+        // ========== GUARDAR PROGRESO DE TEMA ==========
         async function marcarTemaCompletado(tema) {
-            if (progresoUsuario[tema.id]) return;
+            if (progresoUsuario[tema.id]) {
+                mostrarMensaje('Este tema ya estaba completado', 'info');
+                return;
+            }
             const formData = new FormData();
             formData.append('accion', 'progreso');
             formData.append('cedula', usuarioActual.cedula);
@@ -888,55 +831,63 @@
                 const data = await response.json();
                 if (data.result === 'success') {
                     progresoUsuario[tema.id] = true;
-                    mostrarToast('¡Tema completado!');
-                    const li = document.querySelector(`.tema-item[data-tema-id="${tema.id}"]`);
-                    if (li) {
-                        li.querySelector('i').className = 'fas fa-check-circle completado-badge';
-                        li.classList.add('completado');
+                    mostrarToast('¡Tema completado! Se ha guardado tu progreso.');
+                    const liTema = document.querySelector(`.tema-item[data-tema-id="${tema.id}"]`);
+                    if (liTema) {
+                        liTema.querySelector('i').className = 'fas fa-check-circle completado-badge';
+                        liTema.classList.add('completado');
                     }
                     document.getElementById('btnCompletarTema').style.display = 'none';
-                } else throw new Error(data.message);
+                } else {
+                    throw new Error(data.message);
+                }
             } catch (err) {
                 mostrarMensaje('Error al guardar progreso: ' + err.message, 'error');
             }
         }
 
-        // ========== ESTRUCTURA ==========
+        // ========== CARGAR ESTRUCTURA Y CONSTRUIR ÁRBOL CON VISIBILIDAD ==========
         async function cargarEstructuraYMostrar() {
             try {
-                // Intentar cargar desde la hoja "Estructura"
-                const res = await fetch(`${APPS_SCRIPT_URL}?accion=obtenerEstructura`);
-                const data = await res.json();
-                if (data.estructura) {
-                    estructuraGlobal = data.estructura;
-                } else {
-                    // Fallback: cargar estructura.json local
-                    const response = await fetch('estructura.json');
-                    estructuraGlobal = await response.json();
-                }
-                construirArbol();
-                const primer = getPrimerTema();
-                if (primer) mostrarTema(primer.tema, primer.clase, primer.semestre, primer.trayecto);
+                // Cargar configuración de clases (fechas)
+                await cargarConfigClases();
+                // Cargar estructura principal (puede venir del servidor editable o de archivo estático)
+                // Por ahora usamos estructura.json local. Si quieres usar la editable desde Sheets, descomenta.
+                const response = await fetch('estructura.json');
+                estructuraGlobal = await response.json();
+                construirArbolConFechas();
+                const primerTema = getPrimerTema();
+                if (primerTema) mostrarTema(primerTema.tema, primerTema.clase, primerTema.semestre, primerTema.trayecto);
             } catch (error) {
-                console.error(error);
-                document.getElementById('arbolNavegacion').innerHTML = '<p class="mensaje-error">Error al cargar la estructura del curso.</p>';
+                console.error('Error cargando estructura.json:', error);
+                document.getElementById('arbolNavegacion').innerHTML = '<p class="mensaje-error">Error al cargar el contenido. Asegúrate de que estructura.json está en el servidor.</p>';
             }
         }
 
-        function getPrimerTema() {
-            if (!estructuraGlobal) return null;
-            const trayecto = estructuraGlobal.trayectos[0];
-            if (!trayecto) return null;
-            const semestre = trayecto.semestres[0];
-            if (!semestre) return null;
-            const clase = semestre.clases[0];
-            if (!clase) return null;
-            const tema = clase.temas[0];
-            if (!tema) return null;
-            return { tema, clase, semestre, trayecto };
+        async function cargarConfigClases() {
+            try {
+                const res = await fetch(`${APPS_SCRIPT_URL}?accion=getConfigClases`);
+                const data = await res.json();
+                configClases = data.config || {};
+            } catch (err) {
+                console.warn("No se pudo cargar configuración de clases", err);
+                configClases = {};
+            }
         }
 
-        function construirArbol() {
+        function claseVisible(claseId) {
+            const config = configClases[claseId];
+            if (!config) return true; // si no hay config, visible por defecto
+            if (!config.visible) return false;
+            if (config.fechaHabilitacion) {
+                const hoy = new Date();
+                const fechaHab = new Date(config.fechaHabilitacion);
+                if (hoy < fechaHab) return false;
+            }
+            return true;
+        }
+
+        function construirArbolConFechas() {
             const contenedor = document.getElementById('arbolNavegacion');
             contenedor.innerHTML = '';
             const trayecto = estructuraGlobal.trayectos[0];
@@ -951,15 +902,9 @@
                 detailsSem.appendChild(summarySem);
                 const ulClases = document.createElement('ul');
                 semestre.clases.forEach(clase => {
-                    // Verificar si la clase ya debería estar visible (fecha de inicio)
-                    const hoy = new Date();
-                    let visible = true;
-                    if (clase.fecha_inicio) {
-                        const fechaInicio = new Date(clase.fecha_inicio);
-                        if (fechaInicio > hoy) visible = false;
-                    }
-                    if (!visible) return; // Ocultar clase si aún no es visible
-
+                    // Verificar visibilidad según fecha/config
+                    const visible = claseVisible(clase.id);
+                    if (!visible) return; // clase oculta
                     const liClase = document.createElement('li');
                     const detailsClase = document.createElement('details');
                     const summaryClase = document.createElement('summary');
@@ -993,6 +938,20 @@
             contenedor.appendChild(ul);
         }
 
+        function getPrimerTema() {
+            if (!estructuraGlobal) return null;
+            const trayecto = estructuraGlobal.trayectos[0];
+            if (!trayecto) return null;
+            for (const semestre of trayecto.semestres) {
+                for (const clase of semestre.clases) {
+                    if (claseVisible(clase.id) && clase.temas.length > 0) {
+                        return { tema: clase.temas[0], clase, semestre, trayecto };
+                    }
+                }
+            }
+            return null;
+        }
+
         function mostrarTema(tema, clase, semestre, trayecto) {
             temaSeleccionado = { tema, clase, semestre, trayecto };
             const container = document.getElementById('contenidoTema');
@@ -1000,23 +959,24 @@
             let html = `<h2>${tema.titulo}</h2>`;
             if (contenido.texto) html += `<p>${contenido.texto}</p>`;
             if (contenido.imagen) html += `<img src="${contenido.imagen}" style="max-width:100%; border-radius:1rem; margin:1rem 0;" onerror="this.style.display='none'">`;
-            if (contenido.audio) html += `<audio controls style="width:100%; margin:1rem 0;"><source src="${contenido.audio}" type="audio/mpeg"></audio>`;
+            if (contenido.audio) html += `<audio controls style="width:100%; margin:1rem 0;"><source src="${contenido.audio}" type="audio/mpeg">Tu navegador no soporta audio.</audio>`;
             if (contenido.video) html += `<iframe width="100%" height="315" src="${contenido.video}" frameborder="0" allowfullscreen style="border-radius:1rem; margin:1rem 0;"></iframe>`;
             if (contenido.quiz) {
-                html += `<div class="quiz"><h3>📝 Cuestionario</h3><p>${contenido.quiz.pregunta}</p>`;
+                html += `<div class="quiz" data-quiz='${JSON.stringify(contenido.quiz)}'><h3>📝 Cuestionario</h3><p>${contenido.quiz.pregunta}</p>`;
                 contenido.quiz.opciones.forEach((opc, idx) => {
                     html += `<div><input type="radio" name="quiz" value="${idx}"> ${opc}</div>`;
                 });
                 html += `<button id="responderQuiz" class="btn-submit" style="margin-top:0.5rem;">Responder</button><div id="feedbackQuiz"></div></div>`;
             }
-            if (tema.consideraciones && tema.consideraciones.length) {
+            if (tema.consideraciones && tema.consideraciones.length > 0) {
                 html += `<h3>📌 Consideraciones</h3><ul>${tema.consideraciones.map(c => `<li>${c}</li>`).join('')}</ul>`;
             }
             container.innerHTML = html;
 
             const btnCompletar = document.getElementById('btnCompletarTema');
-            if (progresoUsuario[tema.id]) btnCompletar.style.display = 'none';
-            else {
+            if (progresoUsuario[tema.id]) {
+                btnCompletar.style.display = 'none';
+            } else {
                 btnCompletar.style.display = 'block';
                 btnCompletar.onclick = () => marcarTemaCompletado(tema);
             }
@@ -1038,179 +998,261 @@
         }
 
         // ========== ASISTENCIA ==========
-        async function cargarListaEstudiantes() {
+        async function guardarAsistencia() {
+            const fecha = document.getElementById('attendanceDate').value;
+            const claseId = document.getElementById('attendanceClassId').value;
+            const presente = document.getElementById('attendanceStatus').value;
+            if (!fecha || !claseId) {
+                mostrarMensaje('Seleccione fecha y clase', 'error', 'attendanceMessage');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('accion', 'asistencia');
+            formData.append('fecha', fecha);
+            formData.append('cedula', usuarioActual.cedula);
+            formData.append('nombre', `${usuarioActual.nombres} ${usuarioActual.apellidos}`);
+            formData.append('claseId', claseId);
+            formData.append('presente', presente);
+
             try {
-                const res = await fetch(`${APPS_SCRIPT_URL}?accion=listarEstudiantes`);
-                const data = await res.json();
-                const listaDiv = document.getElementById('listaEstudiantes');
-                listaDiv.innerHTML = '';
-                if (data.estudiantes && data.estudiantes.length) {
-                    data.estudiantes.forEach(est => {
-                        const div = document.createElement('div');
-                        div.className = 'asistencia-item';
-                        div.innerHTML = `
-                            <input type="checkbox" value="${est.cedula}" id="asist_${est.cedula}">
-                            <label for="asist_${est.cedula}">${est.nombres} ${est.apellidos} (${est.cedula})</label>
-                        `;
-                        listaDiv.appendChild(div);
-                    });
+                const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    mostrarToast('Asistencia registrada');
+                    document.getElementById('attendanceModal').classList.remove('active');
                 } else {
-                    listaDiv.innerHTML = '<p>No hay estudiantes registrados.</p>';
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                mostrarMensaje('Error: ' + err.message, 'error', 'attendanceMessage');
+            }
+        }
+
+        function cargarClasesEnSelect(selectId) {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">Seleccione clase</option>';
+            if (!estructuraGlobal) return;
+            const trayecto = estructuraGlobal.trayectos[0];
+            trayecto.semestres.forEach(semestre => {
+                semestre.clases.forEach(clase => {
+                    const option = document.createElement('option');
+                    option.value = clase.id;
+                    option.textContent = `${semestre.titulo} - ${clase.titulo}`;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // ========== ADMINISTRACIÓN ==========
+        function loginAdmin() {
+            const pass = document.getElementById('adminPassword').value;
+            // Simulación: la contraseña se verifica en el servidor solo para operaciones, pero aquí podemos usar la misma.
+            // Por simplicidad, usamos la misma contraseña fija.
+            if (pass === "admin123") {
+                adminLoggedIn = true;
+                document.getElementById('adminPanel').style.display = 'block';
+                cargarEstructuraEditable();
+                cargarConfiguracionClasesAdmin();
+                cargarClasesEnSelect('adminAttendanceClass');
+                mostrarToast('Acceso concedido');
+            } else {
+                mostrarMensaje('Contraseña incorrecta', 'error', 'attendanceMessage');
+            }
+        }
+
+        async function cargarEstructuraEditable() {
+            try {
+                const res = await fetch(`${APPS_SCRIPT_URL}?accion=getEstructuraEditable`);
+                const data = await res.json();
+                if (data.estructura) {
+                    document.getElementById('estructuraEditor').value = JSON.stringify(data.estructura, null, 2);
+                } else {
+                    document.getElementById('estructuraEditor').value = '// No hay estructura guardada. Puedes pegar tu JSON aquí.';
                 }
             } catch (err) {
                 console.error(err);
-                document.getElementById('listaEstudiantes').innerHTML = '<p>Error al cargar estudiantes.</p>';
-            }
-        }
-
-        async function guardarAsistencia() {
-            const fecha = document.getElementById('fechaAsistencia').value;
-            if (!fecha) { alert('Selecciona una fecha'); return; }
-            const checks = document.querySelectorAll('#listaEstudiantes input[type="checkbox"]');
-            const presentes = Array.from(checks).filter(cb => cb.checked).map(cb => cb.value);
-            const formData = new FormData();
-            formData.append('accion', 'guardarAsistencia');
-            formData.append('fecha', fecha);
-            formData.append('presentes', JSON.stringify(presentes));
-            try {
-                const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
-                const data = await res.json();
-                if (data.result === 'success') {
-                    mostrarToast('Asistencia guardada');
-                    document.getElementById('asistenciaModal').classList.remove('open');
-                } else throw new Error(data.message);
-            } catch (err) {
-                mostrarMensaje('Error al guardar asistencia: ' + err.message, 'error');
-            }
-        }
-
-        // ========== TUTOR (Admin) ==========
-        async function verificarMaster() {
-            const masterPass = document.getElementById('masterPassword').value;
-            if (masterPass !== 'admin123') {
-                alert('Clave maestra incorrecta');
-                return;
-            }
-            document.getElementById('tutorRegisterForm').style.display = 'block';
-        }
-
-        async function registrarTutor() {
-            const cedula = document.getElementById('tutorCedula').value.trim();
-            const nombre = document.getElementById('tutorNombre').value.trim();
-            const password = document.getElementById('tutorPassword').value;
-            if (!cedula || !nombre || !password) {
-                alert('Completa todos los campos');
-                return;
-            }
-            const formData = new FormData();
-            formData.append('accion', 'registrarTutor');
-            formData.append('cedula', cedula);
-            formData.append('nombre', nombre);
-            formData.append('password', password);
-            try {
-                const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
-                const data = await res.json();
-                if (data.result === 'success') {
-                    mostrarToast('Tutor registrado exitosamente');
-                    document.getElementById('tutorCedula').value = '';
-                    document.getElementById('tutorNombre').value = '';
-                    document.getElementById('tutorPassword').value = '';
-                } else throw new Error(data.message);
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
-        }
-
-        async function cargarEstructuraParaEditar() {
-            try {
-                const res = await fetch(`${APPS_SCRIPT_URL}?accion=obtenerEstructura`);
-                const data = await res.json();
-                if (data.estructura) {
-                    document.getElementById('estructuraJsonEditor').value = JSON.stringify(data.estructura, null, 2);
-                } else {
-                    document.getElementById('estructuraJsonEditor').value = '{}';
-                }
-            } catch (err) {
-                document.getElementById('estructuraJsonEditor').value = 'Error al cargar';
             }
         }
 
         async function guardarEstructura() {
-            const jsonStr = document.getElementById('estructuraJsonEditor').value;
-            let estructura;
+            const newEstructura = document.getElementById('estructuraEditor').value;
             try {
-                estructura = JSON.parse(jsonStr);
-            } catch (e) {
-                alert('JSON inválido');
+                JSON.parse(newEstructura); // validar
+            } catch(e) {
+                mostrarMensaje('JSON inválido', 'error', 'attendanceMessage');
                 return;
             }
             const formData = new FormData();
             formData.append('accion', 'guardarEstructura');
-            formData.append('estructura', JSON.stringify(estructura));
+            formData.append('password', document.getElementById('adminPassword').value);
+            formData.append('estructura', newEstructura);
             try {
-                const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
-                const data = await res.json();
+                const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await response.json();
                 if (data.result === 'success') {
                     mostrarToast('Estructura guardada');
-                    // Recargar el árbol
-                    estructuraGlobal = estructura;
-                    construirArbol();
-                } else throw new Error(data.message);
+                } else {
+                    throw new Error(data.message);
+                }
             } catch (err) {
-                alert('Error al guardar: ' + err.message);
+                mostrarMensaje('Error: ' + err.message, 'error', 'attendanceMessage');
             }
         }
 
-        // ========== INICIALIZACIÓN ==========
+        async function cargarConfiguracionClasesAdmin() {
+            // Mostrar un formulario para cada clase con fecha y visible
+            const container = document.getElementById('classConfigContainer');
+            if (!estructuraGlobal) return;
+            const trayecto = estructuraGlobal.trayectos[0];
+            let html = '';
+            trayecto.semestres.forEach(semestre => {
+                semestre.clases.forEach(clase => {
+                    const config = configClases[clase.id] || { fechaHabilitacion: '', visible: true, orden: 0 };
+                    html += `
+                        <div class="class-config-item">
+                            <h4>${semestre.titulo} - ${clase.titulo}</h4>
+                            <label>Fecha de habilitación (YYYY-MM-DD):</label>
+                            <input type="date" class="class-date" data-clase="${clase.id}" value="${config.fechaHabilitacion || ''}">
+                            <label>Visible:</label>
+                            <input type="checkbox" class="class-visible" data-clase="${clase.id}" ${config.visible ? 'checked' : ''}>
+                        </div>
+                    `;
+                });
+            });
+            container.innerHTML = html;
+        }
+
+        async function guardarConfigClases() {
+            const config = {};
+            const fechas = document.querySelectorAll('.class-date');
+            fechas.forEach(input => {
+                const claseId = input.dataset.clase;
+                const visibleCheck = document.querySelector(`.class-visible[data-clase="${claseId}"]`);
+                config[claseId] = {
+                    fechaHabilitacion: input.value,
+                    visible: visibleCheck ? visibleCheck.checked : true,
+                    orden: 0
+                };
+            });
+            const formData = new FormData();
+            formData.append('accion', 'guardarConfigClases');
+            formData.append('password', document.getElementById('adminPassword').value);
+            formData.append('config', JSON.stringify(config));
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    mostrarToast('Configuración de clases actualizada');
+                    // recargar configuración local
+                    await cargarConfigClases();
+                    // reconstruir árbol
+                    construirArbolConFechas();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                mostrarMensaje('Error: ' + err.message, 'error', 'attendanceMessage');
+            }
+        }
+
+        async function cargarAsistenciasAdmin() {
+            const fecha = document.getElementById('adminAttendanceDate').value;
+            const claseId = document.getElementById('adminAttendanceClass').value;
+            let url = `${APPS_SCRIPT_URL}?accion=getAsistencia`;
+            if (fecha) url += `&fecha=${fecha}`;
+            if (claseId) url += `&claseId=${claseId}`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                const lista = data.asistencia || [];
+                const container = document.getElementById('adminAttendanceList');
+                if (lista.length === 0) {
+                    container.innerHTML = '<p>No hay registros.</p>';
+                    return;
+                }
+                let table = '<table border="1" cellpadding="8" style="width:100%; border-collapse:collapse;"><tr><th>Fecha</th><th>Cédula</th><th>Nombre</th><th>Clase</th><th>Presente</th></tr>';
+                lista.forEach(item => {
+                    table += `<tr>
+                        <td>${item.fecha}</td>
+                        <td>${item.cedula}</td>
+                        <td>${item.nombre}</td>
+                        <td>${item.claseId}</td>
+                        <td>${item.presente}</td>
+                    </tr>`;
+                });
+                table += '</table>';
+                container.innerHTML = table;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // ========== MODO OSCURO ==========
         function initDarkMode() {
-            const dark = localStorage.getItem('darkMode') === 'true';
-            if (dark) document.body.classList.add('dark-mode');
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) document.body.classList.add('dark-mode');
             const btn = document.getElementById('darkModeToggle');
             btn.addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
                 localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
                 btn.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i> Modo claro' : '<i class="fas fa-moon"></i> Modo oscuro';
             });
-            btn.innerHTML = dark ? '<i class="fas fa-sun"></i> Modo claro' : '<i class="fas fa-moon"></i> Modo oscuro';
+            btn.innerHTML = darkMode ? '<i class="fas fa-sun"></i> Modo claro' : '<i class="fas fa-moon"></i> Modo oscuro';
         }
 
+        // ========== DRAWER ==========
         function initDrawer() {
             const profileBtn = document.getElementById('profileBtn');
             const drawer = document.getElementById('profileDrawer');
             const overlay = document.getElementById('drawerOverlay');
             const closeBtn = document.getElementById('closeDrawerBtn');
-            function open() { drawer.classList.add('open'); overlay.classList.add('open'); }
-            function close() { drawer.classList.remove('open'); overlay.classList.remove('open'); }
-            profileBtn.addEventListener('click', open);
-            closeBtn.addEventListener('click', close);
-            overlay.addEventListener('click', close);
+
+            function openDrawer() {
+                drawer.classList.add('open');
+                overlay.classList.add('open');
+            }
+            function closeDrawer() {
+                drawer.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+            profileBtn.addEventListener('click', openDrawer);
+            closeBtn.addEventListener('click', closeDrawer);
+            overlay.addEventListener('click', closeDrawer);
         }
 
+        // ========== MODALES ==========
         function initModals() {
-            const asistenciaBtn = document.getElementById('asistenciaBtn');
-            const adminBtn = document.getElementById('adminBtn');
-            const asistenciaModal = document.getElementById('asistenciaModal');
+            const attendanceModal = document.getElementById('attendanceModal');
             const adminModal = document.getElementById('adminModal');
-            const closeAsistencia = document.getElementById('closeAsistenciaModal');
+            const closeAttendance = document.getElementById('closeAttendanceModal');
             const closeAdmin = document.getElementById('closeAdminModal');
+            const attendanceBtn = document.getElementById('attendanceBtn');
+            const adminBtn = document.getElementById('adminBtn');
 
-            asistenciaBtn.addEventListener('click', () => {
-                cargarListaEstudiantes();
-                document.getElementById('fechaAsistencia').value = new Date().toISOString().split('T')[0];
-                asistenciaModal.classList.add('open');
+            attendanceBtn.addEventListener('click', () => {
+                if (!usuarioActual.cedula) {
+                    mostrarMensaje('Debes iniciar sesión primero', 'error');
+                    return;
+                }
+                // Setear fecha actual por defecto
+                document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
+                cargarClasesEnSelect('attendanceClassId');
+                attendanceModal.classList.add('active');
             });
             adminBtn.addEventListener('click', () => {
-                cargarEstructuraParaEditar();
-                adminModal.classList.add('open');
+                adminModal.classList.add('active');
+                document.getElementById('adminPanel').style.display = 'none';
+                document.getElementById('adminPassword').value = '';
             });
-            closeAsistencia.addEventListener('click', () => asistenciaModal.classList.remove('open'));
-            closeAdmin.addEventListener('click', () => adminModal.classList.remove('open'));
-            window.addEventListener('click', (e) => {
-                if (e.target === asistenciaModal) asistenciaModal.classList.remove('open');
-                if (e.target === adminModal) adminModal.classList.remove('open');
-            });
+            closeAttendance.onclick = () => attendanceModal.classList.remove('active');
+            closeAdmin.onclick = () => adminModal.classList.remove('active');
+            window.onclick = (e) => {
+                if (e.target === attendanceModal) attendanceModal.classList.remove('active');
+                if (e.target === adminModal) adminModal.classList.remove('active');
+            };
         }
 
+        // ========== EVENTOS ==========
         document.addEventListener('DOMContentLoaded', () => {
             initDarkMode();
             initDrawer();
@@ -1220,16 +1262,18 @@
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
                 autoVerifyCedula(e.target.value);
             });
+
             document.getElementById('registerDirectBtn').addEventListener('click', () => {
                 document.getElementById('verificationSection').classList.add('hidden');
                 document.getElementById('registrationSection').classList.remove('oculto');
             });
-            document.getElementById('loginBtn').addEventListener('click', verificarPassword);
+
             document.getElementById('registerUserBtn').addEventListener('click', registrarUsuario);
-            document.getElementById('guardarAsistenciaBtn').addEventListener('click', guardarAsistencia);
-            document.getElementById('verifyMasterBtn').addEventListener('click', verificarMaster);
-            document.getElementById('registrarTutorBtn').addEventListener('click', registrarTutor);
-            document.getElementById('guardarEstructuraBtn').addEventListener('click', guardarEstructura);
+            document.getElementById('saveAttendanceBtn').addEventListener('click', guardarAsistencia);
+            document.getElementById('loginAdminBtn').addEventListener('click', loginAdmin);
+            document.getElementById('saveEstructuraBtn').addEventListener('click', guardarEstructura);
+            document.getElementById('saveClassConfigBtn').addEventListener('click', guardarConfigClases);
+            document.getElementById('loadAttendanceAdminBtn').addEventListener('click', cargarAsistenciasAdmin);
         });
     </script>
 </body>
