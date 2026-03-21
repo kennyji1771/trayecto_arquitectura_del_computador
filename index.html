@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Mantener todos los estilos anteriores y añadir los necesarios para modales y nuevas secciones */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
@@ -18,7 +19,6 @@
             line-height: 1.5;
             transition: background 0.3s, color 0.3s;
         }
-        /* Modo oscuro */
         body.dark-mode {
             background: #0f172a;
             color: #e2e8f0;
@@ -328,7 +328,6 @@
             font-size: 0.9rem;
             margin-top: 2rem;
         }
-        /* Animaciones */
         .pulse-dots {
             display: flex;
             gap: 10px;
@@ -339,7 +338,7 @@
             width: 16px;
             height: 16px;
             border-radius: 50%;
-            background: #3b82f6; /* azul */
+            background: #3b82f6;
             animation: pulse 1.4s infinite both;
         }
         @keyframes pulse {
@@ -379,8 +378,6 @@
             from { top: -80px; opacity: 0; }
             to { top: 30px; opacity: 1; }
         }
-
-        /* Panel deslizable (drawer) */
         .drawer {
             position: fixed;
             top: 0;
@@ -434,13 +431,64 @@
             align-self: flex-end;
             color: inherit;
         }
-
+        /* Modales para Admin y Asistencia */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 300;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 2rem;
+            max-width: 90%;
+            width: 800px;
+            max-height: 90%;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+        body.dark-mode .modal-content {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+        .admin-panel textarea {
+            width: 100%;
+            font-family: monospace;
+            min-height: 400px;
+        }
+        .class-config-item {
+            margin: 1rem 0;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 1rem;
+        }
         @media (max-width: 800px) {
             .main-layout {
                 flex-direction: column;
             }
             .sidebar {
                 width: 100%;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
             }
         }
     </style>
@@ -456,6 +504,8 @@
             </div>
             <nav class="nav">
                 <button id="profileBtn"><i class="fas fa-user-circle"></i> Mi perfil</button>
+                <button id="attendanceBtn"><i class="fas fa-check-circle"></i> Asistencia</button>
+                <button id="adminBtn"><i class="fas fa-user-cog"></i> Admin</button>
                 <button id="darkModeToggle"><i class="fas fa-moon"></i> Modo oscuro</button>
                 <a href="#inicio"><i class="fas fa-rocket"></i> Inicio</a>
                 <a href="#clase"><i class="fas fa-book-open"></i> Clase</a>
@@ -537,18 +587,77 @@
         </div>
     </div>
 
+    <!-- Modal de Asistencia -->
+    <div id="attendanceModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeAttendanceModal">&times;</span>
+            <h2><i class="fas fa-check-circle"></i> Tomar Asistencia</h2>
+            <div class="field">
+                <label>Fecha</label>
+                <input type="date" id="attendanceDate" value="">
+            </div>
+            <div class="field">
+                <label>Clase</label>
+                <select id="attendanceClassId"></select>
+            </div>
+            <div class="field">
+                <label>Estado</label>
+                <select id="attendanceStatus">
+                    <option value="Sí">Presente</option>
+                    <option value="No">Ausente</option>
+                </select>
+            </div>
+            <button id="saveAttendanceBtn" class="btn-submit">Guardar Asistencia</button>
+            <div id="attendanceMessage" class="mensaje-info" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- Modal de Administración -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content" style="max-width: 90%; width: 1000px;">
+            <span class="modal-close" id="closeAdminModal">&times;</span>
+            <h2><i class="fas fa-user-cog"></i> Panel de Administración</h2>
+            <div>
+                <h3>Contraseña de administrador</h3>
+                <input type="password" id="adminPassword" placeholder="Contraseña">
+                <button id="loginAdminBtn">Acceder</button>
+                <div id="adminPanel" style="display:none; margin-top: 2rem;">
+                    <h3>Editar estructura de curso (JSON)</h3>
+                    <textarea id="estructuraEditor" rows="20" style="width:100%; font-family:monospace;"></textarea>
+                    <button id="saveEstructuraBtn" class="btn-submit" style="margin-top:0.5rem;">Guardar estructura</button>
+
+                    <h3>Gestión de fechas de clases</h3>
+                    <div id="classConfigContainer"></div>
+                    <button id="saveClassConfigBtn" class="btn-submit">Guardar configuración de clases</button>
+
+                    <h3>Ver asistencia</h3>
+                    <div>
+                        <label>Filtrar por fecha</label>
+                        <input type="date" id="adminAttendanceDate">
+                        <label>Filtrar por clase</label>
+                        <select id="adminAttendanceClass"></select>
+                        <button id="loadAttendanceAdminBtn">Cargar asistencias</button>
+                        <div id="adminAttendanceList" style="margin-top:1rem;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast de éxito -->
     <div id="toast" class="toast-success" style="display: none;"><i class="fas fa-check-circle"></i> <span id="toastMsg"></span></div>
 
     <script>
         // CONFIGURACIÓN - URL DE APPS SCRIPT (PROPORCIONADA)
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwY6-wFoivSnCzw0uwddpaqggO1NOz5agLJuhkLcwuXU3ZctI_RFveUYzOqXEjGOG_Lrw/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwdTDh43emMQze8UBx-xcThJbxZf77MfIWIoRWMYQMoqyZsb4WJhFbSuYFMXyFmM6NKZQ/exec";
 
         let usuarioActual = { cedula: '', nombres: '', apellidos: '', nucleo: '', pnf: '', trayecto: '', semestre: '' };
         let estructuraGlobal = null;
         let progresoUsuario = {};  // temaId -> true/false
         let temaSeleccionado = null;
         let verificationTimeout = null;
+        let configClases = {}; // almacena visibilidad/fechas
+        let adminLoggedIn = false;
 
         // ========== FUNCIONES DE UI ==========
         function mostrarToast(mensaje, tipo = 'exito') {
@@ -559,8 +668,8 @@
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
-        function mostrarMensaje(texto, tipo) {
-            const div = document.getElementById('verificationStatus');
+        function mostrarMensaje(texto, tipo, elementoId = 'verificationStatus') {
+            const div = document.getElementById(elementoId);
             if (!div) return;
             div.style.display = 'block';
             div.className = `mensaje-${tipo}`;
@@ -737,12 +846,16 @@
             }
         }
 
-        // ========== CARGAR ESTRUCTURA Y CONSTRUIR ÁRBOL ==========
+        // ========== CARGAR ESTRUCTURA Y CONSTRUIR ÁRBOL CON VISIBILIDAD ==========
         async function cargarEstructuraYMostrar() {
             try {
+                // Cargar configuración de clases (fechas)
+                await cargarConfigClases();
+                // Cargar estructura principal (puede venir del servidor editable o de archivo estático)
+                // Por ahora usamos estructura.json local. Si quieres usar la editable desde Sheets, descomenta.
                 const response = await fetch('estructura.json');
                 estructuraGlobal = await response.json();
-                construirArbol();
+                construirArbolConFechas();
                 const primerTema = getPrimerTema();
                 if (primerTema) mostrarTema(primerTema.tema, primerTema.clase, primerTema.semestre, primerTema.trayecto);
             } catch (error) {
@@ -751,20 +864,30 @@
             }
         }
 
-        function getPrimerTema() {
-            if (!estructuraGlobal) return null;
-            const trayecto = estructuraGlobal.trayectos[0];
-            if (!trayecto) return null;
-            const semestre = trayecto.semestres[0];
-            if (!semestre) return null;
-            const clase = semestre.clases[0];
-            if (!clase) return null;
-            const tema = clase.temas[0];
-            if (!tema) return null;
-            return { tema, clase, semestre, trayecto };
+        async function cargarConfigClases() {
+            try {
+                const res = await fetch(`${APPS_SCRIPT_URL}?accion=getConfigClases`);
+                const data = await res.json();
+                configClases = data.config || {};
+            } catch (err) {
+                console.warn("No se pudo cargar configuración de clases", err);
+                configClases = {};
+            }
         }
 
-        function construirArbol() {
+        function claseVisible(claseId) {
+            const config = configClases[claseId];
+            if (!config) return true; // si no hay config, visible por defecto
+            if (!config.visible) return false;
+            if (config.fechaHabilitacion) {
+                const hoy = new Date();
+                const fechaHab = new Date(config.fechaHabilitacion);
+                if (hoy < fechaHab) return false;
+            }
+            return true;
+        }
+
+        function construirArbolConFechas() {
             const contenedor = document.getElementById('arbolNavegacion');
             contenedor.innerHTML = '';
             const trayecto = estructuraGlobal.trayectos[0];
@@ -779,6 +902,9 @@
                 detailsSem.appendChild(summarySem);
                 const ulClases = document.createElement('ul');
                 semestre.clases.forEach(clase => {
+                    // Verificar visibilidad según fecha/config
+                    const visible = claseVisible(clase.id);
+                    if (!visible) return; // clase oculta
                     const liClase = document.createElement('li');
                     const detailsClase = document.createElement('details');
                     const summaryClase = document.createElement('summary');
@@ -810,6 +936,20 @@
                 ul.appendChild(liSem);
             });
             contenedor.appendChild(ul);
+        }
+
+        function getPrimerTema() {
+            if (!estructuraGlobal) return null;
+            const trayecto = estructuraGlobal.trayectos[0];
+            if (!trayecto) return null;
+            for (const semestre of trayecto.semestres) {
+                for (const clase of semestre.clases) {
+                    if (claseVisible(clase.id) && clase.temas.length > 0) {
+                        return { tema: clase.temas[0], clase, semestre, trayecto };
+                    }
+                }
+            }
+            return null;
         }
 
         function mostrarTema(tema, clase, semestre, trayecto) {
@@ -857,6 +997,196 @@
             }
         }
 
+        // ========== ASISTENCIA ==========
+        async function guardarAsistencia() {
+            const fecha = document.getElementById('attendanceDate').value;
+            const claseId = document.getElementById('attendanceClassId').value;
+            const presente = document.getElementById('attendanceStatus').value;
+            if (!fecha || !claseId) {
+                mostrarMensaje('Seleccione fecha y clase', 'error', 'attendanceMessage');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('accion', 'asistencia');
+            formData.append('fecha', fecha);
+            formData.append('cedula', usuarioActual.cedula);
+            formData.append('nombre', `${usuarioActual.nombres} ${usuarioActual.apellidos}`);
+            formData.append('claseId', claseId);
+            formData.append('presente', presente);
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    mostrarToast('Asistencia registrada');
+                    document.getElementById('attendanceModal').classList.remove('active');
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                mostrarMensaje('Error: ' + err.message, 'error', 'attendanceMessage');
+            }
+        }
+
+        function cargarClasesEnSelect(selectId) {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">Seleccione clase</option>';
+            if (!estructuraGlobal) return;
+            const trayecto = estructuraGlobal.trayectos[0];
+            trayecto.semestres.forEach(semestre => {
+                semestre.clases.forEach(clase => {
+                    const option = document.createElement('option');
+                    option.value = clase.id;
+                    option.textContent = `${semestre.titulo} - ${clase.titulo}`;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // ========== ADMINISTRACIÓN ==========
+        function loginAdmin() {
+            const pass = document.getElementById('adminPassword').value;
+            // Simulación: la contraseña se verifica en el servidor solo para operaciones, pero aquí podemos usar la misma.
+            // Por simplicidad, usamos la misma contraseña fija.
+            if (pass === "admin123") {
+                adminLoggedIn = true;
+                document.getElementById('adminPanel').style.display = 'block';
+                cargarEstructuraEditable();
+                cargarConfiguracionClasesAdmin();
+                cargarClasesEnSelect('adminAttendanceClass');
+                mostrarToast('Acceso concedido');
+            } else {
+                mostrarMensaje('Contraseña incorrecta', 'error', 'attendanceMessage');
+            }
+        }
+
+        async function cargarEstructuraEditable() {
+            try {
+                const res = await fetch(`${APPS_SCRIPT_URL}?accion=getEstructuraEditable`);
+                const data = await res.json();
+                if (data.estructura) {
+                    document.getElementById('estructuraEditor').value = JSON.stringify(data.estructura, null, 2);
+                } else {
+                    document.getElementById('estructuraEditor').value = '// No hay estructura guardada. Puedes pegar tu JSON aquí.';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function guardarEstructura() {
+            const newEstructura = document.getElementById('estructuraEditor').value;
+            try {
+                JSON.parse(newEstructura); // validar
+            } catch(e) {
+                mostrarMensaje('JSON inválido', 'error', 'attendanceMessage');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('accion', 'guardarEstructura');
+            formData.append('password', document.getElementById('adminPassword').value);
+            formData.append('estructura', newEstructura);
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    mostrarToast('Estructura guardada');
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                mostrarMensaje('Error: ' + err.message, 'error', 'attendanceMessage');
+            }
+        }
+
+        async function cargarConfiguracionClasesAdmin() {
+            // Mostrar un formulario para cada clase con fecha y visible
+            const container = document.getElementById('classConfigContainer');
+            if (!estructuraGlobal) return;
+            const trayecto = estructuraGlobal.trayectos[0];
+            let html = '';
+            trayecto.semestres.forEach(semestre => {
+                semestre.clases.forEach(clase => {
+                    const config = configClases[clase.id] || { fechaHabilitacion: '', visible: true, orden: 0 };
+                    html += `
+                        <div class="class-config-item">
+                            <h4>${semestre.titulo} - ${clase.titulo}</h4>
+                            <label>Fecha de habilitación (YYYY-MM-DD):</label>
+                            <input type="date" class="class-date" data-clase="${clase.id}" value="${config.fechaHabilitacion || ''}">
+                            <label>Visible:</label>
+                            <input type="checkbox" class="class-visible" data-clase="${clase.id}" ${config.visible ? 'checked' : ''}>
+                        </div>
+                    `;
+                });
+            });
+            container.innerHTML = html;
+        }
+
+        async function guardarConfigClases() {
+            const config = {};
+            const fechas = document.querySelectorAll('.class-date');
+            fechas.forEach(input => {
+                const claseId = input.dataset.clase;
+                const visibleCheck = document.querySelector(`.class-visible[data-clase="${claseId}"]`);
+                config[claseId] = {
+                    fechaHabilitacion: input.value,
+                    visible: visibleCheck ? visibleCheck.checked : true,
+                    orden: 0
+                };
+            });
+            const formData = new FormData();
+            formData.append('accion', 'guardarConfigClases');
+            formData.append('password', document.getElementById('adminPassword').value);
+            formData.append('config', JSON.stringify(config));
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    mostrarToast('Configuración de clases actualizada');
+                    // recargar configuración local
+                    await cargarConfigClases();
+                    // reconstruir árbol
+                    construirArbolConFechas();
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (err) {
+                mostrarMensaje('Error: ' + err.message, 'error', 'attendanceMessage');
+            }
+        }
+
+        async function cargarAsistenciasAdmin() {
+            const fecha = document.getElementById('adminAttendanceDate').value;
+            const claseId = document.getElementById('adminAttendanceClass').value;
+            let url = `${APPS_SCRIPT_URL}?accion=getAsistencia`;
+            if (fecha) url += `&fecha=${fecha}`;
+            if (claseId) url += `&claseId=${claseId}`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                const lista = data.asistencia || [];
+                const container = document.getElementById('adminAttendanceList');
+                if (lista.length === 0) {
+                    container.innerHTML = '<p>No hay registros.</p>';
+                    return;
+                }
+                let table = '<table border="1" cellpadding="8" style="width:100%; border-collapse:collapse;"><tr><th>Fecha</th><th>Cédula</th><th>Nombre</th><th>Clase</th><th>Presente</th></tr>';
+                lista.forEach(item => {
+                    table += `<tr>
+                        <td>${item.fecha}</td>
+                        <td>${item.cedula}</td>
+                        <td>${item.nombre}</td>
+                        <td>${item.claseId}</td>
+                        <td>${item.presente}</td>
+                    </tr>`;
+                });
+                table += '</table>';
+                container.innerHTML = table;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
         // ========== MODO OSCURO ==========
         function initDarkMode() {
             const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -870,7 +1200,7 @@
             btn.innerHTML = darkMode ? '<i class="fas fa-sun"></i> Modo claro' : '<i class="fas fa-moon"></i> Modo oscuro';
         }
 
-        // ========== DRAWER (panel deslizable) ==========
+        // ========== DRAWER ==========
         function initDrawer() {
             const profileBtn = document.getElementById('profileBtn');
             const drawer = document.getElementById('profileDrawer');
@@ -890,10 +1220,43 @@
             overlay.addEventListener('click', closeDrawer);
         }
 
+        // ========== MODALES ==========
+        function initModals() {
+            const attendanceModal = document.getElementById('attendanceModal');
+            const adminModal = document.getElementById('adminModal');
+            const closeAttendance = document.getElementById('closeAttendanceModal');
+            const closeAdmin = document.getElementById('closeAdminModal');
+            const attendanceBtn = document.getElementById('attendanceBtn');
+            const adminBtn = document.getElementById('adminBtn');
+
+            attendanceBtn.addEventListener('click', () => {
+                if (!usuarioActual.cedula) {
+                    mostrarMensaje('Debes iniciar sesión primero', 'error');
+                    return;
+                }
+                // Setear fecha actual por defecto
+                document.getElementById('attendanceDate').value = new Date().toISOString().split('T')[0];
+                cargarClasesEnSelect('attendanceClassId');
+                attendanceModal.classList.add('active');
+            });
+            adminBtn.addEventListener('click', () => {
+                adminModal.classList.add('active');
+                document.getElementById('adminPanel').style.display = 'none';
+                document.getElementById('adminPassword').value = '';
+            });
+            closeAttendance.onclick = () => attendanceModal.classList.remove('active');
+            closeAdmin.onclick = () => adminModal.classList.remove('active');
+            window.onclick = (e) => {
+                if (e.target === attendanceModal) attendanceModal.classList.remove('active');
+                if (e.target === adminModal) adminModal.classList.remove('active');
+            };
+        }
+
         // ========== EVENTOS ==========
         document.addEventListener('DOMContentLoaded', () => {
             initDarkMode();
             initDrawer();
+            initModals();
             const cedulaInput = document.getElementById('cedulaInput');
             cedulaInput.addEventListener('input', (e) => {
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
@@ -906,6 +1269,11 @@
             });
 
             document.getElementById('registerUserBtn').addEventListener('click', registrarUsuario);
+            document.getElementById('saveAttendanceBtn').addEventListener('click', guardarAsistencia);
+            document.getElementById('loginAdminBtn').addEventListener('click', loginAdmin);
+            document.getElementById('saveEstructuraBtn').addEventListener('click', guardarEstructura);
+            document.getElementById('saveClassConfigBtn').addEventListener('click', guardarConfigClases);
+            document.getElementById('loadAttendanceAdminBtn').addEventListener('click', cargarAsistenciasAdmin);
         });
     </script>
 </body>
